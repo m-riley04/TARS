@@ -38,6 +38,7 @@ def walk(TARS, steps:int, direction:str):
 
         # After testing change the movement to move_servo_gradually 
         # for smoother movement
+        # Test
 
         time.sleep(1)
 
