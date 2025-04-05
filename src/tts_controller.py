@@ -22,7 +22,7 @@ class TtsController():
             model="gpt-4o-mini-tts",
             voice="onyx",
             input=text,
-            instructions=f"Voice Affect: {self.voice_affect}\nTone: {self.tone}\nPacing: {self.pacing}",
+            instructions=f"Voice Affect: {self.voice_affect}\nTone: {self.tone}\nPacing: {self.pacing}\nEmotion: {self.emotion}\nPronunciation: {self.pronunciation}\nPauses: {self.pauses}", #"Do an impression of the AI robot TARS from the movie Interstellar."
             response_format="pcm"
         ) as response:
             await LocalAudioPlayer().play(response)
