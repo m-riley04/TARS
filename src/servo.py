@@ -133,6 +133,8 @@ def main():
         logger.info("\nSelect an option:")
         logger.info("1. Walk forward")
         logger.info("2. Walk backward")
+        logger.info("5. Exit")
+
 
         choice = input("> ")
 
@@ -140,6 +142,9 @@ def main():
             walk(TARS, 1, "fwd")
         elif choice == '2':
             walk(TARS, 1, "bkwd")
+        elif choice == '5':
+            logger.info("Exiting sero.py script")
+            break
         else:
             logger.warning("Invalid choice. Please try again.")
 
