@@ -1,5 +1,6 @@
 from google import genai
 import dotenv
+from personality_parameters import PersonalityParameters
 
 class ConvoController():
     """Controller for conversation generation using the Gemini API"""
@@ -46,27 +47,31 @@ TARS: "That's above my pay grade. But if you're asking for practical advice, may
         {self.examples}"""
         
         # Conversation memory
-        self.memory = []
+        self.memory = [f"SYSTEM: {self.system_prompt}"]
         
         # Load API clients
         self.client = genai.Client(api_key=self.api_key)
         
     def reset_memory(self):
         """Resets the conversation memory."""
-        self.memory = []
+        self.memory = [f"SYSTEM: {self.system_prompt}"]
 
-    def send_message(self, msg: str) -> str:
+    def send_message(self, msg: str, personality_parameters: PersonalityParameters = None) -> str:
         """
-        Sends a message to TARS to respond to.
+        Sends a message for TARS to respond to.
         
         @returns str - The response to the sent message
         """
+        _contents = f"PREVIOUS CONVERSATION: {self.memory}" 
+            
+        if personality_parameters is not None:
+            _contents += f"\nPERSONALITY PARAMETERS: {personality_parameters}"
+            
+        _contents += f"\nNEW USER MESSAGE: '{msg}'"
+        
         response = self.client.models.generate_content(
             model=self.model,
-            contents=f"""
-            SYSTEM PROMPT: {self.system_prompt}
-            PREVIOUS CONVERSATION: {self.memory}
-            NEW USER MESSAGE: '{msg}'"""
+            contents=_contents
         )
         
         # Update conversation memory with the new message and response

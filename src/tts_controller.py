@@ -2,6 +2,7 @@ import pyttsx3 as tts
 import dotenv
 from openai import AsyncOpenAI
 from openai.helpers import LocalAudioPlayer
+from personality_parameters import PersonalityParameters
 
 class TtsController():
     def __init__(self, env_path: str = "../.env"):
@@ -27,7 +28,16 @@ class TtsController():
             Pacing: {self.pacing}
             Emotion: {self.emotion}
             Pronunciation: {self.pronunciation}
-            Pauses: {self.pauses}""",
+            Pauses: {self.pauses}"""
+        
+        if personality_parameters is not None:
+            _instructions += f"\nPersonality Parameters:\n{personality_parameters}"
+        
+        async with self.client.audio.speech.with_streaming_response.create(
+            model="gpt-4o-mini-tts",
+            voice="onyx",
+            input=text,
+            instructions=_instructions,
             response_format="pcm"
         ) as response:
             await LocalAudioPlayer().play(response)

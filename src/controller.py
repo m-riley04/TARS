@@ -1,12 +1,14 @@
 from speech_controller import SpeechController
 from convo_controller import ConvoController
 from tts_controller import TtsController
+from personality_parameters import PersonalityParameters
 
 class Controller:
     def __init__(self, env_path: str = "../.env"):
         self.speech_controller = SpeechController(env_path=env_path)
         self.convo_controller = ConvoController(env_path=env_path)
         self.tts_controller = TtsController(env_path=env_path)
+        self.personality_parameters = PersonalityParameters()
     
     async def run(self):
         """Runs the program"""
@@ -23,7 +25,8 @@ class Controller:
             
             # Generate a repsonse using Gemini
             response = self.convo_controller.send_message(
-                user_command={user_command}
+                msg={user_command},
+                personality_parameters=self.personality_parameters
             )
             
             # Print the response
@@ -32,6 +35,6 @@ class Controller:
             print("=== END OF MESSAGE ===")
             
             # Speak the response using TTS
-            await self.tts_controller.speak(response)
+            await self.tts_controller.speak(response, self.personality_parameters)
             
             
