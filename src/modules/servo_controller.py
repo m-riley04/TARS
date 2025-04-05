@@ -57,7 +57,7 @@ class ServoController:
         self.connected = False
         
         # Default pulse width range
-        self.min_pulse = 0
+        self.min_pulse = 86
         self.max_pulse = 600
         self.neutral_pulse = 300
         
@@ -132,115 +132,89 @@ class ServoController:
         pulse = int(self.min_pulse + (self.max_pulse - self.min_pulse) * angle / 180)
         return self.set_servo_pulse(channel, pulse)
     
-    def auto_calibrate_servo(self, channel, is_center_servo=False):
-        """
-        Automatically calibrate a servo to find min, max, and neutral positions.
-        
-        Args:
-            channel (int): Channel number (0-15)
-            is_center_servo (bool): Whether this is a center servo with additional height values
-            
-        Returns:
-            dict: Dictionary containing calibration values
-        """
-        if not self.connected:
-            logger.warning("Not connected to PCA9685. Cannot calibrate servo.")
-            return None
-            
-        logger.info(f"Starting auto-calibration for servo on channel {channel}...")
-        
-        # Find minimum PWM value using a curved approach
-        step = 150  # Initial large step
-        pwm_value = self.max_pulse  # Start at the high end
-        min_pulse = None
-        
-        logger.info("Finding minimum PWM value...")
-        while step >= 1:
-            logger.info(f"Testing PWM: {pwm_value}")
-            self.set_servo_pulse(channel, pwm_value)
-            time.sleep(0.5)
-            
-            user_input = input(f"Did the servo start moving? (y/n): ").strip().lower()
-            if user_input == "y":
-                min_pulse = pwm_value
-                pwm_value -= step
-            else:
-                pwm_value += step
-            
-            step //= 2
-        
-        if min_pulse is None:
-            logger.error("Failed to find minimum PWM value.")
-            return None
-            
-        logger.info(f"Servo starts moving at PWM: {min_pulse}")
-        
-        # Find maximum PWM value
-        step = 50
-        pwm_value = min_pulse  # Start from the found minimum value
-        max_pulse = None
-        
-        logger.info("Finding maximum PWM value...")
-        while step >= 1:
-            logger.info(f"Testing PWM: {pwm_value}")
-            self.set_servo_pulse(channel, pwm_value)
-            time.sleep(0.5)
-            
-            user_input = input(f"Did the servo stop moving? (y/n): ").strip().lower()
-            if user_input == "y":
-                max_pulse = pwm_value
-                pwm_value -= step
-            else:
-                pwm_value += step
-            
-            step //= 2
-        
-        if max_pulse is None:
-            logger.error("Failed to find maximum PWM value.")
-            return None
-            
-        logger.info(f"Servo stops moving at PWM: {max_pulse}")
-        
-        # Calculate neutral position
-        neutral_pulse = (min_pulse + max_pulse) // 2
-        logger.info(f"Setting servo to neutral position: {neutral_pulse}")
-        self.set_servo_pulse(channel, neutral_pulse)
-        
-        # Store calibration values
-        self.min_pulse = min_pulse
-        self.max_pulse = max_pulse
-        self.neutral_pulse = neutral_pulse
-        
-        calibration = {
-            "min_pulse": min_pulse,
-            "max_pulse": max_pulse,
-            "neutral_pulse": neutral_pulse
-        }
-        
-        # Additional calculations for center servo
-        if is_center_servo:
-            down_height = abs(min_pulse - max_pulse) // 2
-            up_height = min_pulse
-            neutral_height = (down_height + up_height) // 2
-            
-            calibration.update({
-                "up_height": up_height,
-                "neutral_height": neutral_height,
-                "down_height": down_height
-            })
-            
-            logger.info(f"Calibration complete for center servo {channel}:")
-            logger.info(f"  Up Height: {up_height}")
-            logger.info(f"  Neutral Height: {neutral_height}")
-            logger.info(f"  Down Height: {down_height}")
+def auto_calibrate_servo(self, channel, is_center_servo=False):
+    """
+    Automatically calibrates a servo to find min, max, and neutral PWM values.
+    For a center servo, it calculates additional height values.
+    """
+    print(f"Starting auto-calibration for servo on channel {channel}...")
+
+    # Find minimum PWM value using a curved approach
+    print("Finding minimum PWM value...")
+    step = 150  # Initial large step
+    pwm_value = self.max_pulse  # Start at the high end
+    min_pulse = None
+    while step >= 1:
+        print(f"Testing PWM: {pwm_value}")
+        self.set_servo_pulse(channel, pwm_value)
+        time.sleep(0.5)
+        user_input = input("Did the servo start moving? (y/n): ").strip().lower()
+        if user_input == "y":
+            min_pulse = pwm_value
+            pwm_value -= step
         else:
-            logger.info(f"Calibration complete for servo {channel}:")
-            
-        logger.info(f"  Back Port: {min_pulse}")
-        logger.info(f"  Neutral Port: {neutral_pulse}")
-        logger.info(f"  Forward Port: {max_pulse}")
-        
-        return calibration
+            pwm_value -= step
+        step //= 2
+
+    if min_pulse is None:
+        print("Failed to find minimum PWM value.")
+        return
+    print(f"Servo starts moving at PWM: {min_pulse}")
+
+    # Find maximum PWM value
+    print("Finding maximum PWM value...")
+    step = 50
+    pwm_value = min_pulse  # Start from the found minimum value
+    max_pulse = None
+    while step >= 1:
+        print(f"Testing PWM: {pwm_value}")
+        self.set_servo_pulse(channel, pwm_value)
+        time.sleep(0.5)
+        user_input = input("Did the servo stop moving? (y/n): ").strip().lower()
+        if user_input == "n":
+            max_pulse = pwm_value
+            pwm_value += step
+        else:
+            max_pulse = pwm_value - step
+            pwm_value -= step
+        step //= 2
+
+    if max_pulse is None:
+        print("Failed to find maximum PWM value.")
+        return
+    print(f"Servo stops moving at PWM: {max_pulse}")
+
+    # Calculate neutral position
+    neutral_pulse = (min_pulse + max_pulse) // 2
+    print(f"Setting servo to neutral position: {neutral_pulse}")
+    self.set_servo_pulse(channel, neutral_pulse)
+
+    # Output port/starboard values if not a center servo
+    if not is_center_servo:
+        neutral_port = neutral_pulse
+        neutral_starboard = neutral_pulse
+        forward_port = int(neutral_pulse + 0.1 * (max_pulse - neutral_pulse))
+        back_starboard = int(neutral_pulse + 0.1 * (neutral_pulse - min_pulse))
+        forward_starboard = int(neutral_pulse - 0.1 * (neutral_pulse - min_pulse))
+        back_port = int(neutral_pulse - 0.1 * (max_pulse - neutral_pulse))
+
+        print(f"Calibration complete for servo {channel}:")
+        print(f"  Back Port: {back_port}")
+        print(f"  Neutral Port: {neutral_port}")
+        print(f"  Forward Port: {forward_port}")
+        print(f"  Back Starboard: {back_starboard}")
+        print(f"  Neutral Starboard: {neutral_starboard}")
+        print(f"  Forward Starboard: {forward_starboard}")
+
+    else:  # Additional calculations for center servo
+        down_height = abs((min_pulse - max_pulse) // 2)
+        up_height = min_pulse
+        neutral_height = (down_height + up_height) // 2
+
+        print(f"Calibration complete for center servo {channel}:")
+        print(f"  Up Height: {up_height}")
+        print(f"  Neutral Height: {neutral_height}")
+        print(f"  Down Height: {down_height}")
     
     def set_all_servos_preset(self):
         """
@@ -311,7 +285,7 @@ class ServoController:
             logger.info("3. Manually set servo 1 pulse width")
             logger.info("4. Manually set servo 2 pulse width")
             logger.info("5. Manually set servo 15 pulse width")
-            logger.info("6. Auto-calibrate servo")
+            logger.info("6. Auto-calibrate servo -- should be pin 15")
             logger.info("7. Exit")
             
             choice = input("> ")
