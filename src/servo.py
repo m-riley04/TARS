@@ -138,10 +138,16 @@ def main():
         choice = input("> ")
 
         if choice == '1':
-            steps = input("How many steps? >")
+            try:
+                steps = int(input("How many steps? >"))
+            except ValueError:
+                print("Not an integer value...")
             walk(TARS, steps, "fwd")
         elif choice == '2':
-            steps = input("How many steps? >")
+            try:
+                steps = int(input("How many steps? >"))
+            except ValueError:
+                print("Not an integer value...")
             walk(TARS, steps, "bkwd")
         elif choice == '5':
             logger.info("Exiting sero.py script")
