@@ -4,6 +4,11 @@ import logging
 from modules.servo_controller import ServoController
 
 # Configure logging
+logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
 logger = logging.getLogger('servo')
 
 #########################################################################
@@ -130,7 +135,6 @@ def main():
         logger.info("2. Walk backward")
         logger.info("5. Exit")
 
-
         choice = input("> ")
 
         if choice == '1':
@@ -147,7 +151,5 @@ def main():
 
 
     
-
-
 if __name__ == "__main__":
     main()
