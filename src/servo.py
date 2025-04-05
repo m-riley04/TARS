@@ -35,6 +35,10 @@ def walk(TARS, steps:int, direction:str):
             # Ideally: 0,2 are up down -- 1,3 are movement 
             # 0,1 are left
             # 2,3 are right
+
+        # After testing change the movement to move_servo_gradually 
+        # for smoother movement
+
         time.sleep(1)
 
         """ Theory
@@ -45,7 +49,7 @@ def walk(TARS, steps:int, direction:str):
             Move left leg down
         wait 0.1
             Move right leg up
-        Move right leg + 45 deg
+        Move right leg + 45 deg + Move left leg 0 deg
             Move right leg down
         wait 0.1
 
@@ -61,6 +65,7 @@ def walk(TARS, steps:int, direction:str):
         """
 
         ts = 0.5 # Time asleep
+
         if direction == 'fwd':
             # Math to get left and right movements 
             for i in range(steps):
@@ -68,14 +73,21 @@ def walk(TARS, steps:int, direction:str):
                     # Left side operation
                     TARS.set_servo_pulse(1, TARS.max_pulse - 150)
                     time.sleep(ts)
+                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
                     TARS.set_servo_pulse(3, TARS.max_pulse - 150)
                     time.sleep(ts)
+                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
+
                 else:
                     # Right side operation
                     TARS.set_servo_pulse(3, TARS.max_pulse - 150)
                     time.sleep(ts)
+                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
                     TARS.set_servo_pulse(1, TARS.max_pulse - 150)
                     time.sleep(ts)
+                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
+
+            logger.info(f"Walked {steps} steps forward")
         elif direction == 'bkwd':
             for i in range(steps):
                 if i % 2 != 0:
@@ -90,10 +102,9 @@ def walk(TARS, steps:int, direction:str):
                     time.sleep(ts)
                     TARS.set_servo_pulse(1, TARS.min_pulse + 150)
                     time.sleep(ts)
+            logger.info(f"Walked {steps} steps forward")
         else:
             logger.info("Not a valid direction")
-
-
         
     except Exception as e:
         logger.error(f"Error during walk sequence: {e}")
