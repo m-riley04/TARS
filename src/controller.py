@@ -16,10 +16,10 @@ class Controller:
         # Main runtime loop
         while True:
             # Wait for the wake phrase
-            phrase = self.speech_controller.listen_for_wake_phrase()
+            detected = self.speech_controller.listen_for_wake_phrase()
             
             # Check if the transcript contains wake word(s)/phrase(s)
-            if "hey tars" in phrase.lower() or "hey, tars" in phrase.lower():
+            if detected:
                 print("Wake phrase detected!")
             else:
                 print("Wake phrase not detected. Please try again.")
