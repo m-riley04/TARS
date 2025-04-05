@@ -1,12 +1,15 @@
-import speech_recognition as sr
-import assemblyai as aai
-import dotenv
-import openwakeword
-import numpy as np
-import os
+import assemblyai as aai, dotenv, logging, numpy as np, openwakeword as oww, speech_recognition as sr
 
-class SpeechController():
+class ListenController():
+    """
+    Controller for listening to audio input and performing actions/transcribing onto/with it.
+    """
     def __init__(self, env_path: str = "../.env"):
+        # Initialize logger
+        self.logger = logging.getLogger('listen_controller')
+        self.logger.info("Initializing ListenController...")
+        
+        # Initialize AssemblyAI API
         aai.settings.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="ASSEMBLY_AI_API_KEY")
         
         # Init speech recognizer
@@ -21,29 +24,33 @@ class SpeechController():
         self.transcriber = aai.Transcriber()
         
         # Init wake word model
-        openwakeword.utils.download_models()
-        self.wake_word_model = openwakeword.Model(
+        oww.utils.download_models()
+        self.wake_word_model = oww.Model(
             wakeword_models=["models/hey_tars.onnx"],
             custom_verifier_models={"hey_tars": f"models/training/riley_model.pkl"},
             custom_verifier_threshold=0.3,
             inference_framework="onnx")
+        
+        # Log
+        self.logger.info("ListenController initialized successfully.")
 
     def listen_for_wake_phrase(self):
         """
         Continuously listens until the wake phrase(s) is detected.
         """
-        print("Waiting for wake phrase ('Hey TARS')...")
+        self.logger.info("Waiting for wake phrase ('Hey TARS')...")
         with self.microphone as source:
             # Listen for speaking
             audio = self.recognizer.listen(source=source, phrase_time_limit=1.5)
             
-            # Notify user
-            print("Predicting wake word...")
+            # Log
+            self.logger.info("Analyzing speech...")
             
+            # Transform audio to numpy array and predict wake word
             audio_data = np.frombuffer(audio.get_raw_data(), dtype=np.int16)
-            predictions = self.wake_word_model.predict_clip(audio_data)
             
-            #print("Predictions:", predictions)
+            # Predict wake word
+            predictions = self.wake_word_model.predict_clip(audio_data)
             
             # Check predictions across all segments
             detected = any(pred["hey_tars"] > 0.5 for pred in predictions)
@@ -52,14 +59,16 @@ class SpeechController():
 
     def listen_for_command(self):
         """Listens for the command after the wake word has been detected."""
-        print("Listening for command...")
+        self.logger.info("Listening for command...")
         with self.microphone as source:
+            # Set the microphone to listen
             audio = self.recognizer.listen(source)
             
+            # Transcribe the audio using AssemblyAI
             command = self.transcriber.transcribe_async(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
             
-            # Notify user
-            print("Transcribing command...")
+            # Log
+            self.logger.info("Transcribing command...")
             
             # Wait for transcription to complete
             while command.running():
@@ -69,16 +78,16 @@ class SpeechController():
                 
             # Check for errors or cancellation
             if command.exception():
-                print("Transcription error:", command.exception())
+                self.logger.exception("Transcription error:", command.exception())
                 return
             elif command.cancelled():
-                print("Transcription cancelled")
+                self.logger.warning("Transcription cancelled")
                 return
             
             _result = command.result()
                 
             # Print the recognized command
-            print(f"Transcribed command: {_result.text}\nConfidence: {_result.confidence}")
+            self.logger.info(f"Transcribed command: {_result.text}\nConfidence: {_result.confidence}")
             return _result.text
         
         
@@ -88,10 +97,10 @@ async def main():
     dotenv.load_dotenv(dotenv.find_dotenv())
     
     # Init speech controller
-    speech_controller = SpeechController(dotenv.find_dotenv())
+    listen_controller = ListenController(dotenv.find_dotenv())
     
     while True:
-        speech_controller.listen_for_wake_phrase()
+        listen_controller.listen_for_wake_phrase()
    
 
 if __name__ == "__main__":
