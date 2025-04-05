@@ -15,13 +15,23 @@ class Controller:
         
         # Main runtime loop
         while True:
-            # Wait for the wake word
-            self.speech_controller.listen_for_wake_word()
+            # Wait for the wake phrase
+            phrase = self.speech_controller.listen_for_wake_phrase()
             
-            user_command = ""
-            while user_command == "":
-                # Listen for the command after the wake word has been detected
-                user_command = self.speech_controller.listen_for_command()
+            # Check if the transcript contains wake word(s)/phrase(s)
+            if "hey tars" in phrase.lower() or "hey, tars" in phrase.lower():
+                print("Wake phrase detected!")
+            else:
+                print("Wake phrase not detected. Please try again.")
+                continue
+
+            # Listen for the command after the wake word has been detected
+            user_command = self.speech_controller.listen_for_command()
+            
+            # Check command validity
+            if user_command is None:
+                print("No command detected. Please try again.")
+                continue
             
             # Generate a repsonse using Gemini
             response = self.convo_controller.send_message(

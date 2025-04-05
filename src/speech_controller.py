@@ -13,38 +13,67 @@ class SpeechController():
         # Init transcriber (text to speech)
         self.transcriber = aai.Transcriber()
 
-    def listen_for_wake_word(self):
-        """Continuously listens until the wake word is detected."""
-        print("Waiting for wake word ('Hey TARS' or 'TARS')...")
-        while True:
-            with self.microphone as source:
-                audio = self.recognizer.listen(source)
-            try:
-                transcript = self.transcriber.transcribe(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
-                print("Heard:", transcript.text)
-                # Check if the transcript contains wake word(s)/phrase(s)
-                if "tars" in transcript.text.lower():
-                    print("Wake word detected")
+    def listen_for_wake_phrase(self):
+        """Continuously listens until the wake phrase(s) is detected."""
+        print("Waiting for wake phrase ('Hey TARS')...")
+        with self.microphone as source:
+            # Listen for speaking
+            audio = self.recognizer.listen(source)
+            
+            # Transcribe audio
+            transcript = self.transcriber.transcribe_async(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
+            
+            # Notify user
+            print("Transcribing wake phrase...")
+            
+            # Wait for transcription to complete
+            while transcript.running():
+                # Check if the transcription is complete
+                if transcript.done():
                     break
-            except sr.UnknownValueError:
-                # Speech was unintelligible, continue listening
-                continue
-            except sr.RequestError as e:
-                print(f"Could not request results; {e}")
-                continue
+                
+            # Check for errors or cancellation
+            if transcript.exception():
+                print("Transcription error:", transcript.exception())
+                return
+            elif transcript.cancelled():
+                print("Transcription cancelled")
+                return
+            
+            _result = transcript.result()
+            
+            # Print what was heard
+            print("Heard:", _result.text)
+            
+            return _result.text
 
     def listen_for_command(self):
         """Listens for the command after the wake word has been detected."""
         print("Listening for command...")
         with self.microphone as source:
             audio = self.recognizer.listen(source)
-        try:
-            command = self.transcriber.transcribe(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
-            print(f"Command recognized: {command.text}\nConfidence: {command.confidence}")
-            return command.text
-        except sr.UnknownValueError:
-            print("AssemblyAI Speech Recognition could not understand the audio")
-            return ""
-        except sr.RequestError as e:
-            print(f"Could not request results; {e}")
-            return ""
+            
+            command = self.transcriber.transcribe_async(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
+            
+            # Notify user
+            print("Transcribing command...")
+            
+            # Wait for transcription to complete
+            while command.running():
+                # Check if the transcription is complete
+                if command.done():
+                    break
+                
+            # Check for errors or cancellation
+            if command.exception():
+                print("Transcription error:", command.exception())
+                return
+            elif command.cancelled():
+                print("Transcription cancelled")
+                return
+            
+            _result = command.result()
+                
+            # Print the recognized command
+            print(f"Transcribed command: {_result.text}\nConfidence: {_result.confidence}")
+            return _result.text
