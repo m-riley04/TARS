@@ -153,7 +153,7 @@ def main():
                 print("Not an integer value...")
             walk(TARS, steps, "bkwd")
         elif choice == '5':
-            logger.info("Exiting sero.py script")
+            logger.info("Exiting servo.py script")
             break
         else:
             logger.warning("Invalid choice. Please try again.")
