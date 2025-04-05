@@ -65,28 +65,31 @@ def walk(TARS, steps:int, direction:str):
         wait 0.1
         """
 
-        ts = 0.1 # Time asleep
+        ts = 0.5 # Time asleep
 
         if direction == 'fwd':
             # Math to get left and right movements 
+            start_pulse = TARS.neutral_pulse
+            end_pulse = TARS.max_pulse - TARS.half
+
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
+                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
+                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
 
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
+                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
+                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
 
             logger.info(f"Walked {steps} steps forward")
         elif direction == 'bkwd':
