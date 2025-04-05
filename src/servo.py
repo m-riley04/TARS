@@ -66,7 +66,8 @@ def walk(TARS, steps:int, direction:str):
         """
 
         ts = 0.5 # Time asleep
-
+        logger.info(direction)
+        
         if direction == 'fwd':
             # Math to get left and right movements 
             for i in range(steps):
