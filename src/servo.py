@@ -132,16 +132,16 @@ def main():
 
         if choice == '1':
             try:
-                steps = int(input("How many steps? > "))
+                step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, steps, "fwd")
+            walk(TARS, step_count, "fwd")
         elif choice == '2':
             try:
-                steps = int(input("How many steps? > "))
+                step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, steps, "bkwd")
+            walk(TARS, step_count, "bkwd")
         elif choice == '5':
             logger.info("Exiting servo.py script")
             break
