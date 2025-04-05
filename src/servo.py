@@ -120,7 +120,8 @@ def walk(TARS, steps:int, direction:str):
 #########################################################################
 
 def main():
-    logger.info("\nStarting servo testing...")
+    logger.info("\n")
+    logger.info("Starting servo testing...")
 
     # Create a servo controller instance
     TARS = ServoController()
@@ -131,7 +132,8 @@ def main():
     
     # Display menu?
     while True:
-        logger.info("\n\nSelect an option:")
+        logger.info("\n\n")
+        logger.info("Select an option:")
         logger.info("1. Walk forward")
         logger.info("2. Walk backward")
         logger.info("5. Exit")

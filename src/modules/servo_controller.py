@@ -54,7 +54,7 @@ class ServoController:
         # Default pulse width range
         self.min_pulse = 140 # 86 full min
         self.max_pulse = 600 # 649 full max
-        self.half = 230/2 # 45 deg angle
+        self.half = 115 # 45 deg angle
         self.neutral_pulse = 370
         
         # Connect to the PCA9685
