@@ -5,7 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv("../")
 
 def main():
-    controller: Controller = Controller(find_dotenv())
+    controller: Controller = Controller(find_dotenv()) # Find the .env file and get the path back to it
     controller.run()
 
 if __name__ == "__main__":
