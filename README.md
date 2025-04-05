@@ -19,7 +19,7 @@ We utilized AssemblyAI to transcribe the user's commands/questions to TARS, that
 <!-- Add stuff here -->
 
 ## Conversational Controller
-We utilized Google Gemini API for TARS' conversationalism and action control. We went with the 
+We utilized Google Gemini API for TARS' conversationalism and action control. We went with the `gemini-2.0-flash` model, as it best suited our use case with good reasoning and also good speed.
 <!-- Add stuff here -->
 
 ## Text-to-Speech Controller
