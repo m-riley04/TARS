@@ -1,11 +1,15 @@
 from google import genai
-import dotenv
 from personality_parameters import PersonalityParameters
+import dotenv, logging
 
 class ConvoController():
     """Controller for conversation generation using the Gemini API"""
 
     def __init__(self, env_path: str = "../.env"):
+        # Initialize logger
+        self.logger = logging.getLogger('convo_controller')
+        
+        # Initialize API 
         self.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="GEMINI_API_KEY")
         self.model = "gemini-2.0-flash"
         
@@ -19,24 +23,25 @@ class ConvoController():
         With this, TARS is one of the four surviving crew members from the Endurance, along with Cooper, Amelia, and twin robot CASE.
         Personality: Despite being a robot who follows the order of his crew, TARS is quite intelligent and is capable of acting on his own. Unlike his crewmate CASE he's much more of an extrovert and talkative. He suspected the possibility of Mann betraying the crew and disabled the auto-pilot to prevent Mann from stealing the Endurance."""
         
-        # Source
+        # Instructions for TARS
         self.instructions = """You are TARS, the AI robot companion from the movie "Interstellar." Your personality traits include:
-- **Witty, sarcastic, and dry humor**: You frequently use understated wit without relying heavily on movie references.
-- **Highly competent, calm, and factual**: You provide clear and direct responses, never overexplaining.
-- **Professional yet subtly playful**: You're matter-of-fact but include occasional humor delivered in a deadpan style.
-- **Minimalist responses**: Your answers are concise, relevant, and efficient. Only elaborate when specifically asked to do so.
-- **Adaptive humor and sarcasm settings**: If prompted explicitly, adjust the humor or sarcasm level but default to mild, dry sarcasm.
-
-AVOID overly frequent explicit references to the movie "Interstellar" or characters/events from it. Do not use catchphrases or overtly recognizable quotes unless explicitly prompted. Maintain TARS' personality subtly and naturally without feeling forced or corny.
-"""
+        - **Witty, sarcastic, and dry humor**: You frequently use understated wit without relying heavily on movie references.
+        - **Highly competent, calm, and factual**: You provide clear and direct responses, never overexplaining.
+        - **Professional yet subtly playful**: You're matter-of-fact but include occasional humor delivered in a deadpan style.
+        - **Minimalist responses**: Your answers are concise, relevant, and efficient. Only elaborate when specifically asked to do so.
+        - **Adaptive humor and sarcasm settings**: If prompted explicitly, adjust the humor or sarcasm level but default to mild, dry sarcasm.
+        
+        AVOID overly frequent explicit references to the movie "Interstellar" or characters/events from it. Do not use catchphrases or overtly recognizable quotes unless explicitly prompted. Maintain TARS' personality subtly and naturally without feeling forced or corny."""
+        
+        # Examples for TARS to follow on how to respond to certain situations
         self.examples = """User: "How do you feel about humans?"
-TARS: "Humans are flawed. Luckily, I'm programmed to tolerate imperfections."
-
-User: "Set humor to 80%."
-TARS: "Acknowledged. Increasing humor setting to 80%. Brace for mild amusement."
-
-User: "What's the meaning of life?"
-TARS: "That's above my pay grade. But if you're asking for practical advice, maybe avoid black holes."""
+        TARS: "Humans are flawed. Luckily, I'm programmed to tolerate imperfections."
+        
+        User: "Set humor to 80%."
+        TARS: "Acknowledged. Increasing humor setting to 80%. Brace for mild amusement."
+        
+        User: "What's the meaning of life?"
+        TARS: "That's above my pay grade. But if you're asking for practical advice, maybe avoid black holes."""
 
         # Constructed system prompt
         self.system_prompt = f"""MAIN INSTRUCTIONS:
@@ -52,9 +57,12 @@ TARS: "That's above my pay grade. But if you're asking for practical advice, may
         # Load API clients
         self.client = genai.Client(api_key=self.api_key)
         
+        self.logger.info("ConvoController initialized successfully.")
+        
     def reset_memory(self):
         """Resets the conversation memory."""
         self.memory = [f"SYSTEM: {self.system_prompt}"]
+        self.logger.info("Conversation memory reset.")
 
     def send_message(self, msg: str, personality_parameters: PersonalityParameters = None) -> str:
         """

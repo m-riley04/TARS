@@ -1,11 +1,15 @@
 import pyttsx3 as tts
-import dotenv
+import dotenv, logging
 from openai import AsyncOpenAI
 from openai.helpers import LocalAudioPlayer
 from personality_parameters import PersonalityParameters
 
 class TtsController():
     def __init__(self, env_path: str = "../.env", offline: bool = False):
+        # Initialize logger
+        self.logger = logging.getLogger('tts_controller')
+        self.logger.info("Initializing TTSController...")
+        
         # Initialize OpenAI
         self.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="OPENAI_API_KEY")
         self.client = AsyncOpenAI(api_key=self.api_key)
@@ -21,6 +25,9 @@ class TtsController():
         self.emotion = "Controlled neutrality with occasional subtle amusement."
         self.pronunciation = "Crisp, articulate, mildly robotic with minimal variation."
         self.pauses = "Brief pauses strategically placed after humorous or sarcastic remarks for deadpan comedic effect."
+        
+        # Log
+        self.logger.info("TTSController initialized successfully.")
 
     async def speak(self, text, personality_parameters: PersonalityParameters = None):
         """Speaks the given text using TTS."""
