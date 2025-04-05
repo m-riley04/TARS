@@ -13,11 +13,6 @@ import logging
 import subprocess
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
 logger = logging.getLogger('hardware_tester')
 
 def check_i2c_tools():

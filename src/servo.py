@@ -5,10 +5,10 @@ from modules.servo_controller import ServoController
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
 logger = logging.getLogger('servo')
 
 #########################################################################
@@ -135,14 +135,19 @@ def main():
         logger.info("2. Walk backward")
         logger.info("5. Exit")
 
-
         choice = input("> ")
 
         if choice == '1':
-            steps = input("How many steps? >")
+            try:
+                steps = int(input("How many steps? >"))
+            except ValueError:
+                print("Not an integer value...")
             walk(TARS, steps, "fwd")
         elif choice == '2':
-            steps = input("How many steps? >")
+            try:
+                steps = int(input("How many steps? >"))
+            except ValueError:
+                print("Not an integer value...")
             walk(TARS, steps, "bkwd")
         elif choice == '5':
             logger.info("Exiting sero.py script")
@@ -152,7 +157,5 @@ def main():
 
 
     
-
-
 if __name__ == "__main__":
     main()
