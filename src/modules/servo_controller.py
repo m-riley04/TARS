@@ -57,9 +57,9 @@ class ServoController:
         self.connected = False
         
         # Default pulse width range
-        self.min_pulse = 86
-        self.max_pulse = 600
-        self.neutral_pulse = 300
+        self.min_pulse = 50
+        self.max_pulse = 700
+        self.neutral_pulse = 330
         
         # Connect to the PCA9685
         self.connect()
