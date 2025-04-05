@@ -67,7 +67,7 @@ def walk(TARS, steps:int, direction:str):
 
         ts = 0.5 # Time asleep
         logger.info(direction)
-        
+
         if direction == 'fwd':
             # Math to get left and right movements 
             for i in range(steps):
@@ -120,7 +120,7 @@ def walk(TARS, steps:int, direction:str):
 #########################################################################
 
 def main():
-    logger.info("Starting servo testing...")
+    logger.info("\nStarting servo testing...")
 
     # Create a servo controller instance
     TARS = ServoController()
@@ -131,7 +131,7 @@ def main():
     
     # Display menu?
     while True:
-        logger.info("\nSelect an option:")
+        logger.info("\n\nSelect an option:")
         logger.info("1. Walk forward")
         logger.info("2. Walk backward")
         logger.info("5. Exit")
