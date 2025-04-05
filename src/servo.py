@@ -65,8 +65,7 @@ def walk(TARS, steps:int, direction:str):
         wait 0.1
         """
 
-        ts = 0.5 # Time asleep
-        logger.info(TARS.max_pulse - TARS.half)
+        ts = 0.1 # Time asleep
 
         if direction == 'fwd':
             # Math to get left and right movements 
@@ -91,19 +90,7 @@ def walk(TARS, steps:int, direction:str):
 
             logger.info(f"Walked {steps} steps forward")
         elif direction == 'bkwd':
-            for i in range(steps):
-                if i % 2 != 0:
-                    # Left side operation
-                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                else:
-                    # Right side operation
-                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
+            logger.info("Not implemented yet...")
             logger.info(f"Walked {steps} steps forward")
         else:
             logger.info("Not a valid direction")
@@ -142,13 +129,13 @@ def main():
 
         if choice == '1':
             try:
-                steps = int(input("How many steps? >"))
+                steps = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
             walk(TARS, steps, "fwd")
         elif choice == '2':
             try:
-                steps = int(input("How many steps? >"))
+                steps = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
             walk(TARS, steps, "bkwd")
