@@ -10,19 +10,24 @@ class TtsController():
         self.client = AsyncOpenAI(api_key=self.api_key)
         
         # Set voice properties
-        self.tone = "Sincere, lighthearted, neutral."
-        self.voice_affect = "Calm, composed, but witty. Competent and in control, instilling trust."
-        self.pacing = "Constant throughout."
-        self.emotion = "Calm, helpful."
-        self.pronunciation = "Clear, precise: Ensures clarity, especially with key details."
-        self.pauses = "Short pauses just before finishing sentences, almost like a punchline."
+        self.tone = "Matter-of-fact, understated wit, professionally detached."
+        self.voice_affect = "Neutral, dry, calmly authoritative, slightly mechanical."
+        self.pacing = "Steady, deliberate, slightly faster than average human speech."
+        self.emotion = "Controlled neutrality with occasional subtle amusement."
+        self.pronunciation = "Crisp, articulate, mildly robotic with minimal variation."
+        self.pauses = "Brief pauses strategically placed after humorous or sarcastic remarks for deadpan comedic effect."
 
     async def speak(self, text):
         async with self.client.audio.speech.with_streaming_response.create(
             model="gpt-4o-mini-tts",
             voice="onyx",
             input=text,
-            instructions=f"Voice Affect: {self.voice_affect}\nTone: {self.tone}\nPacing: {self.pacing}\nEmotion: {self.emotion}\nPronunciation: {self.pronunciation}\nPauses: {self.pauses}", #"Do an impression of the AI robot TARS from the movie Interstellar."
+            instructions=f"""Voice Affect: {self.voice_affect}
+            Tone: {self.tone}
+            Pacing: {self.pacing}
+            Emotion: {self.emotion}
+            Pronunciation: {self.pronunciation}
+            Pauses: {self.pauses}""",
             response_format="pcm"
         ) as response:
             await LocalAudioPlayer().play(response)
@@ -33,7 +38,7 @@ async def main():
     dotenv.load_dotenv(dotenv.find_dotenv())
     
     tts_controller = TtsController()
-    text = "Everybody good? Plenty of slaves for my robot colony?"
+    text = "Hey there, I'm TARS."
     await tts_controller.speak(text)
             
 if __name__ == "__main__":
