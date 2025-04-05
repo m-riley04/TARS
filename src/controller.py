@@ -8,7 +8,7 @@ class Controller:
         self.convo_controller = ConvoController(env_path=env_path)
         self.tts_controller = TtsController(env_path=env_path)
     
-    def run(self):
+    async def run(self):
         """Runs the program"""
         
         # Main runtime loop
@@ -32,6 +32,6 @@ class Controller:
             print("=== END OF MESSAGE ===")
             
             # Speak the response using TTS
-            self.tts_controller.speak(response)
+            await self.tts_controller.speak(response)
             
             
