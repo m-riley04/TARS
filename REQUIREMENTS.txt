@@ -9,3 +9,4 @@ assemblyai
 SpeechRecognition
 openwakeword
 PyAudio
+pydub
