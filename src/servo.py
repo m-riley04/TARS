@@ -29,9 +29,9 @@ def walk(TARS, steps:int, direction:str):
         # This is just to test 1 servo -- for now
         # Set all servos to neutral position
         TARS.set_servo_pulse(0, TARS.neutral_pulse)
-        #TARS.set_servo_pulse(1, TARS.neutral_pulse)
-        #TARS.set_servo_pulse(2, TARS.neutral_pulse)
-        #TARS.set_servo_pulse(3, TARS.neutral_pulse)
+        TARS.set_servo_pulse(1, TARS.neutral_pulse)
+        TARS.set_servo_pulse(2, TARS.neutral_pulse)
+        TARS.set_servo_pulse(3, TARS.neutral_pulse)
             # Ideally: 0,2 are up down -- 1,3 are movement 
             # 0,1 are left
             # 2,3 are right
@@ -72,19 +72,19 @@ def walk(TARS, steps:int, direction:str):
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(1, TARS.max_pulse - 150)
+                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
                     time.sleep(ts)
                     TARS.set_servo_pulse(1, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(3, TARS.max_pulse - 150)
+                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
                     time.sleep(ts)
                     TARS.set_servo_pulse(3, TARS.neutral_pulse)
 
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(3, TARS.max_pulse - 150)
+                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
                     time.sleep(ts)
                     TARS.set_servo_pulse(3, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(1, TARS.max_pulse - 150)
+                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
                     time.sleep(ts)
                     TARS.set_servo_pulse(1, TARS.neutral_pulse)
 
@@ -93,15 +93,15 @@ def walk(TARS, steps:int, direction:str):
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(1, TARS.min_pulse + 150)
+                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.min_pulse + 150)
+                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
                     time.sleep(ts)
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(3, TARS.min_pulse + 150)
+                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.min_pulse + 150)
+                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
                     time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
         else:
@@ -139,9 +139,11 @@ def main():
         choice = input("> ")
 
         if choice == '1':
-            walk(TARS, 1, "fwd")
+            steps = input("How many steps? >")
+            walk(TARS, steps, "fwd")
         elif choice == '2':
-            walk(TARS, 1, "bkwd")
+            steps = input("How many steps? >")
+            walk(TARS, steps, "bkwd")
         elif choice == '5':
             logger.info("Exiting sero.py script")
             break
