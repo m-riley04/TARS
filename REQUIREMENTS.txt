@@ -1,12 +1,12 @@
 adafruit-pca9685
+assemblyai
+dotenv
 numpy
 openai
 google-genai
-dotenv
-pyttsx3
-sounddevice
-assemblyai
-SpeechRecognition
 openwakeword
 PyAudio
+pyttsx3
 pydub
+sounddevice
+SpeechRecognition

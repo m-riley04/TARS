@@ -5,7 +5,7 @@ async def main():
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format='[%(levelname)s] [%(asctime)s] %(name)s - %(message)s',
         handlers=[logging.StreamHandler()]
     )
     logger = logging.getLogger('main')
