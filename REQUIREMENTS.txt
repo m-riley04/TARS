@@ -1,0 +1,9 @@
+adafruit-pca9685
+numpy
+openai
+google-genai
+dotenv
+pyttsx3
+sounddevice
+assemblyai
+SpeechRecognition
