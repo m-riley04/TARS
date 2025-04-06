@@ -227,6 +227,7 @@ def run(TARS, distance:int, direction:str):
         # PID setup
         pid = PID(kp=2.8, ki=0.75, kd=1.75)
         distance_walked = 0
+        dt_elapsed = time_step
         step = 0
 
         while distance_walked < distance:
