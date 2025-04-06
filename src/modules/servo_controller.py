@@ -208,6 +208,7 @@ def run(TARS, distance:int, direction:str):
         base_stride_cm = 4.5  # Your estimated distance per step
         stride_adjustment_per_output = 0.1  # Scales how PID affects stride
         time_step = 0.75
+        start_time = time.perf_counter()
 
         # Pulse range reference
         start_pulse = TARS.mid
@@ -274,8 +275,9 @@ def run(TARS, distance:int, direction:str):
 
             step += 1
             distance_walked += base_stride_cm * stride_modifier
-
-        logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps.")
+        
+        time_elapsed = time.perf_counter() - start_time
+        logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps | Elapsed time: {time_elapsed:.4f} seconds")
 
     except Exception as e:
         logger.error(f"Error during run sequence: {e}")
