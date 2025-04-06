@@ -26,27 +26,43 @@ def walk(TARS, steps:int, direction:str):
     
     logger.info("Starting walk sequence...")
     try:
+        # Predefine
+        start_pulse = TARS.mid
+        end_pulse = TARS.max - TARS.half
+        down = 206 # 154 deg
+        up = 600 # 0
+        ts = 0.75 # Time asleep -- need to tune later to make faster
+    
         # Set all servos to neutral position
-        TARS.set_servo_pulse(0, TARS.neutral_pulse)
-        TARS.set_servo_pulse(1, TARS.neutral_pulse)
-        TARS.set_servo_pulse(2, TARS.neutral_pulse)
-        TARS.set_servo_pulse(3, TARS.neutral_pulse)
-            # Ideally: 0,2 are up down -- 1,3 are movement 
+        # Ideally: 0,2 are up down -- 1,3 are movement 
             # 0,1 are left
             # 2,3 are right
 
-        time.sleep(0.5)
+        lv = 0
+        lh = 1
+        rv = 2
+        rh = 3
+
+        # Set Servos to Home
+        TARS.set_servo_pulse(lv, down)
+        TARS.set_servo_pulse(lh, start_pulse)
+        TARS.set_servo_pulse(rv, down)
+        TARS.set_servo_pulse(rh, start_pulse)
+
+        time.sleep(ts)
 
         """ Theory
         To walk:
         1st step:
             Move left leg up
         Move left leg + 45 deg
-            Move left leg down
         wait 0.1
+            Move left leg down
             Move right leg up
         Move right leg + 45 deg + Move left leg 0 deg
+        wait 0.1
             Move right leg down
+        Move right leg 0 deg
         wait 0.1
 
         2nd step:
@@ -60,37 +76,43 @@ def walk(TARS, steps:int, direction:str):
         wait 0.1
         """
 
-        ts = 0.5 # Time asleep
-
         if direction == 'fwd':
             # Math to get left and right movements 
-            start_pulse = TARS.neutral_pulse
-            end_pulse = TARS.max_pulse - TARS.half
-            home = 206 # 154 deg
-            target = 600 # 0
-
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_angle(0, 154)
-                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
+                    TARS.set_servo_pulse(lv, up)
+                    TARS.move_servo_gradually(lh, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
-                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
+
+                    TARS.set_servo_pulse(lv, down)
+                    TARS.set_servo_pulse(rv, up)
+                    TARS.move_servo_gradually(rh, start_pulse, end_pulse)
+                    TARS.move_servo_gradually(lh, end_pulse, start_pulse)
                     time.sleep(ts)
-                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
+
+                    TARS.set_servo_pulse(rh, down)
+                    TARS.move_servo_gradually(rh, end_pulse, start_pulse)
+                    time.sleep(ts)
 
                 else:
                     # Right side operation
-                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
+                    TARS.set_servo_pulse(rv, up)
+                    TARS.move_servo_gradually(rh, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
-                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
-                    time.sleep(ts)
-                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
 
+                    TARS.set_servo_pulse(rv, down)
+                    TARS.set_servo_pulse(lv, up)
+                    TARS.move_servo_gradually(lh, start_pulse, end_pulse)
+                    TARS.move_servo_gradually(rh, end_pulse, start_pulse)
+                    time.sleep(ts)
+
+                    TARS.set_servo_pulse(lh, down)
+                    TARS.move_servo_gradually(lv, end_pulse, start_pulse)
+                    time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
         elif direction == 'bkwd':
+            end_pulse = TARS.min + TARS.half
             logger.info("Not implemented yet...")
             logger.info(f"Walked {steps} steps forward")
         else:

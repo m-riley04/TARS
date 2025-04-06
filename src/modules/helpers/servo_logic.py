@@ -58,10 +58,10 @@ class ServoController:
         self.connected = False
         
         # Default pulse width range
-        self.min_pulse = 140 # 86 full min
-        self.max_pulse = 600 # 649 full max
+        self.min = 140 # 86 full min
+        self.max = 600 # 649 full max
         self.half = 115 # 45 deg angle
-        self.neutral_pulse = 370
+        self.mid = 370
         
         # Connect to the PCA9685
         self.connect()
@@ -103,8 +103,8 @@ class ServoController:
             logger.warning("Not connected to PCA9685. Cannot set servo pulse.")
             return False
             
-        if not self.min_pulse <= pulse <= self.max_pulse:
-            logger.warning(f"Pulse out of range ({self.min_pulse}-{self.max_pulse}): {pulse}")
+        if not self.min <= pulse <= self.max:
+            logger.warning(f"Pulse out of range ({self.min}-{self.max}): {pulse}")
             return False
             
         try:
@@ -131,7 +131,7 @@ class ServoController:
             return False
             
         # Convert angle to pulse width
-        pulse = int(self.min_pulse + (self.max_pulse - self.min_pulse) * angle / 180)
+        pulse = int(self.min + (self.max - self.min) * angle / 180)
         return self.set_servo_pulse(channel, pulse)
     
     def auto_calibrate_servo(self, channel, is_center_servo=False):
@@ -144,7 +144,7 @@ class ServoController:
         # Find minimum PWM value using a curved approach
         print("Finding minimum PWM value...")
         step = 150  # Initial large step
-        pwm_value = self.max_pulse  # Start at the high end
+        pwm_value = self.max  # Start at the high end
         min_pulse = None
         while step >= 1:
             print(f"Testing PWM: {pwm_value}")
@@ -256,21 +256,21 @@ class ServoController:
             
         while True:
             try:
-                pulse_input = input(f"Enter pulse width for servo {channel} ({self.min_pulse}-{self.max_pulse}): ")
+                pulse_input = input(f"Enter pulse width for servo {channel} ({self.min}-{self.max}): ")
                 pulse = int(pulse_input)
                 
-                if self.min_pulse <= pulse <= self.max_pulse:
+                if self.min <= pulse <= self.max:
                     result = self.set_servo_pulse(channel, pulse)
                     logger.info(f"Set servo on channel {channel} to pulse {pulse}")
                     break  # Exit the loop after a valid pulse is entered
                 else:
-                    logger.warning(f"Pulse out of range ({self.min_pulse}-{self.max_pulse}): {pulse}")
+                    logger.warning(f"Pulse out of range ({self.min}-{self.max}): {pulse}")
             except ValueError:
                 logger.error("Invalid input. Please enter a number.")
         
         return True
 
-    def move_servo_gradually(controller, channel, start_pulse, end_pulse, steps=10, delay=0.05):
+    def move_servo_gradually(controller, channel, start_pulse, end_pulse, steps=6, delay=0.05):
         """
         Move a servo from one position to another gradually.
         
