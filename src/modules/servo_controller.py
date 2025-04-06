@@ -225,7 +225,7 @@ def run(TARS, distance:int, direction:str):
         time.sleep(time_step)
 
         # PID setup
-        pid = PID(kp=3, ki=0.75, kd=2.25)
+        pid = PID(kp=2.75, ki=0.75, kd=1.8)
         distance_walked = 0
         step = 0
 
