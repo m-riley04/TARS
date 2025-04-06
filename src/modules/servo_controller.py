@@ -231,7 +231,8 @@ def run(TARS, distance:int, direction:str):
 
         while distance_walked < distance:
             # Estimate current position
-            output = pid.compute(distance, distance_walked, time_step)
+            output = pid.compute(distance, distance_walked, dt_elapsed)
+            dt = time.perf_counter()
             stride_modifier = 1 + (output * stride_adjustment_per_output)
             stride_modifier = max(0.8, min(1.2, stride_modifier))  # clamp
 
@@ -275,6 +276,8 @@ def run(TARS, distance:int, direction:str):
 
             step += 1
             distance_walked += base_stride_cm * stride_modifier
+            dt_elapsed = time.perf_counter() - dt
+
         
         time_elapsed = time.perf_counter() - start_time
         logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps | Output: {output:.2f} | Elapsed time: {time_elapsed:.4f} seconds")
