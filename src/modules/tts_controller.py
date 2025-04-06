@@ -2,12 +2,7 @@ import pyttsx3 as tts
 import dotenv, logging
 from openai import AsyncOpenAI
 from openai.helpers import LocalAudioPlayer
-
-if __package__ is not None:
-    from ..models.personality_parameters import PersonalityParameters
-else:
-    pass
-    #from src.models.personality_parameters import PersonalityParameters
+from modules.models.personality_parameters import PersonalityParameters
 
 class TtsController():
     def __init__(self, env_path: str = "../.env", offline: bool = False):

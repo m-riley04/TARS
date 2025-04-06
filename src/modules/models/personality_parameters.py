@@ -14,6 +14,13 @@ class PersonalityParameters:
     sarcasm: float = 0.6
     skepticism: float = 0.5
     
+    def update(self, parameter_name, value):
+        """Updates the specified personality parameter."""
+        if hasattr(self, parameter_name):
+            setattr(self, parameter_name, value)
+        else:
+            raise ValueError(f"Invalid personality parameter '{parameter_name}'")
+    
     def __str__(self):
         """Returns a string representation of the personality parameters."""
         return f"""

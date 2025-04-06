@@ -10,3 +10,4 @@ pyttsx3
 pydub
 sounddevice
 SpeechRecognition
+vosk

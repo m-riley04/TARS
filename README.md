@@ -42,6 +42,8 @@ The major components of TARS' hardware can be found below.
 <!-- Add stuff here -->
 ## Speaker and Amplifier
 <!-- Add stuff here -->
+- Speaker: MakerHawk
+- Amplifier: [WWZMDiB MAX98357 I2S Amplifier Module](https://www.amazon.com/WWZMDiB-MAX98357-Amplifier-Unfiltered-Raspberry/dp/B0BTBS5NW2)
 ## Microphone
 <!-- Add stuff here -->
 ## 3D Prints
