@@ -1,7 +1,7 @@
-from ..modules.listen_controller import ListenController
-from ..modules.convo_controller import ConvoController
-from ..modules.tts_controller import TtsController
-from ..models.personality_parameters import PersonalityParameters
+from modules.listen_controller import ListenController
+from modules.convo_controller import ConvoController
+from modules.tts_controller import TtsController
+from modules.models.personality_parameters import PersonalityParameters
 import logging
 
 class TARS:

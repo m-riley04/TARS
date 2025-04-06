@@ -1,5 +1,6 @@
 from google import genai
-from ..models.personality_parameters import PersonalityParameters
+from google.genai import types
+from modules.models.personality_parameters import PersonalityParameters
 import dotenv, logging
 
 class ConvoController():
