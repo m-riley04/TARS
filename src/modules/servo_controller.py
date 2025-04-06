@@ -207,7 +207,7 @@ def run(TARS, distance:int, direction:str):
         """
         base_stride_cm = 4.5  # Your estimated distance per step
         stride_adjustment_per_output = 0.1  # Scales how PID affects stride
-        time_step = 0.75
+        time_step = 0.6
         start_time = time.perf_counter()
 
         # Pulse range reference
