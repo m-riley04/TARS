@@ -206,7 +206,7 @@ def run(TARS, distance:int, direction:str):
         
         """
         base_stride_cm = 4.5  # Your estimated distance per step
-        stride_adjustment_per_output = 0.01  # Scales how PID affects stride
+        stride_adjustment_per_output = 0.05  # Scales how PID affects stride
         time_step = 0.2
         start_time = time.perf_counter()
 
@@ -233,7 +233,7 @@ def run(TARS, distance:int, direction:str):
             # Estimate current position
             output = pid.compute(distance, distance_walked, time_step)
             stride_modifier = 1 + (output * stride_adjustment_per_output)
-            stride_modifier = max(0.8, min(1.2, stride_modifier))  # clamp
+            stride_modifier = max(0.8, min(1.5, stride_modifier))  # clamp
 
             # Convert to pulse movement
             max_stride_pulse = (TARS.max - TARS.half) if direction == 'fwd' else (TARS.min + TARS.half)
