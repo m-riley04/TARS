@@ -65,6 +65,22 @@ shutdown = {
     }
 }
 
+diagnostics = {
+    "name": "diagnostics",
+    "description": "Performs a diagnostics check on the system.",
+    "parameters": {
+        "type": "object"
+    }
+}
+
+wave = {
+    "name": "wave",
+    "description": "Waves at the user.",
+    "parameters": {
+        "type": "object",
+    }
+}
+
 class TARS:
     def __init__(self, env_path: str = "../.env"):
         # Configure logging
@@ -79,7 +95,7 @@ class TARS:
         
         # Initailize controllers
         self.listen_controller = ListenController(env_path=env_path)
-        self.convo_controller = ConvoController(env_path=env_path, function_declarations=[update_personality_declaration, get_weather_declaration])
+        self.convo_controller = ConvoController(env_path=env_path, function_declarations=[update_personality_declaration, get_weather_declaration, diagnostics, wave, shutdown])
         self.tts_controller = TtsController(env_path=env_path)
         
         # Log the initialization
@@ -93,6 +109,24 @@ class TARS:
             self.logger.info(f"Personality parameter '{parameter}' updated to {value}.")
         except ValueError as e:
             self.logger.error(e)
+            
+    def action_shutdown(self):
+        """Shuts down the program"""
+        # self.logger.info("Shutting down TARS...")
+        # sounddevice.stop()
+        # sounddevice.close()
+        # exit(0)
+        pass
+    
+    def action_diagnostics(self):
+        """Moves both arms up and down to check the motors"""
+        # TODO: implement the diagnostics check action
+        return "Diagnostics check complete."
+    
+    def action_wave(self):
+        """Moves the arm to wave at the user"""
+        # TODO: implement the wave action
+        return "Waving at the user."
         
     def perform_function_call(self, function_call: types.FunctionCall):
         """Performs the function call using the TARS tools"""
@@ -112,6 +146,30 @@ class TARS:
             self.logger.info(f"Weather information: {weather_info}")
             
             return weather_info
+        
+        if function_call.name == "diagnostics": 
+            ret = self.action_diagnostics()
+            
+            # Log
+            self.logger.info(f"Diagnostics: {ret}")
+            
+            return ret
+        
+        if function_call.name == "shutdown": 
+            ret = self.action_shutdown()
+            
+            # Log
+            self.logger.info(f"Shutting down: {ret}")
+            
+            return ret
+        
+        if function_call.name == "wave": 
+            ret = self.action_wave()
+            
+            # Log
+            self.logger.info(f"Waving: {ret}")
+            
+            return ret
             
     
     async def run(self):
