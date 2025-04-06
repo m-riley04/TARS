@@ -270,7 +270,7 @@ class ServoController:
         
         return True
 
-    def move_servo_gradually(controller, channel, start_pulse, end_pulse, steps=6, delay=0.05):
+    def move_servo_gradually(controller, channel, start_pulse, end_pulse, steps=4, delay=0.05):
         """
         Move a servo from one position to another gradually.
         
