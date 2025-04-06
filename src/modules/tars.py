@@ -5,6 +5,8 @@ from modules.models.personality_parameters import PersonalityParameters
 import logging
 from google.genai import types
 from modules.tars_tools import TarsTools
+import sounddevice
+
 
 update_personality_declaration = {
     "name": "update_personality",
@@ -102,6 +104,8 @@ class TARS:
     async def run(self):
         """Runs the program"""
         self.logger.info("Beginning main runtime loop...")
+        
+        await self.tts_controller.speak("I am now online.", self.personality_parameters)
         while True:
             # Wait for the wake phrase
             detected = self.listen_controller.listen_for_wake_phrase()

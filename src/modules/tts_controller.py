@@ -1,4 +1,5 @@
 import pyttsx3 as tts
+import sounddevice
 import dotenv, logging
 from openai import AsyncOpenAI
 from openai.helpers import LocalAudioPlayer
