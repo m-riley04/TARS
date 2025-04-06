@@ -13,13 +13,14 @@ class TypingEffectApp:
         self.root = root
         self.text_queue = text_queue
         self.delay = delay  # in milliseconds
+        self.font_size = 30
         
         # Label for listening indicator
-        self.listeningLight = tk.Label(root, text="", font=("Courier", 16),
+        self.listeningLight = tk.Label(root, text="", font=("Courier", self.font_size),
                                        fg="red", bg="black")
 
         # Main text label
-        self.label = tk.Label(root, text="", font=("Courier", 16),
+        self.label = tk.Label(root, text="", font=("Courier", self.font_size),
                               bg="black", fg="green", anchor="nw", justify="left",
                               wraplength=root.winfo_screenwidth())
         self.label.pack(padx=20, pady=20)
