@@ -46,14 +46,34 @@ walk_declaration = {
             "direction": {
                 "type": "string",
                 "description": "The direction to walk in.",
-                "enum": ["forward", "backward", "left", "right"]
+                "enum": ["forward", "backward"]
             },
-            "duration": {
+            "steps": {
                 "type": "number",
-                "description": "The duration to walk in seconds."
+                "description": "The amount of steps."
             }
         },
-        "required": ["direction"]
+        "required": ["direction", "steps"]
+    }
+}
+
+run_declaration = {
+    "name": "run",
+    "description": "Run a particular distance.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "direction": {
+                "type": "string",
+                "description": "The direction to run in.",
+                "enum": ["forward", "backward"]
+            },
+            "distance": {
+                "type": "number",
+                "description": "The distance in centimeters."
+            }
+        },
+        "required": ["direction", "distance"]
     }
 }
 

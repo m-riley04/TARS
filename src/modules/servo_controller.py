@@ -79,7 +79,7 @@ def walk(TARS, steps:int, direction:str):
         wait 0.1
         """
 
-        if direction == 'fwd':
+        if direction == 'forward':
             # Math to get left and right movements 
             end_pulse = TARS.max - TARS.half
             for i in range(steps):
@@ -115,7 +115,7 @@ def walk(TARS, steps:int, direction:str):
                     TARS.move_servo_gradually(lh, end_pulse, start_pulse)
                     time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
-        elif direction == 'bkwd':
+        elif direction == 'backward':
             # Math to get left and right movements 
             end_pulse = TARS.min + TARS.half
             for i in range(steps):
@@ -236,7 +236,7 @@ def run(TARS, distance:int, direction:str):
             stride_modifier = max(0.8, min(1.5, stride_modifier))  # clamp
 
             # Convert to pulse movement
-            max_stride_pulse = (TARS.max - TARS.half) if direction == 'fwd' else (TARS.min + TARS.half)
+            max_stride_pulse = (TARS.max - TARS.half) if direction == 'forward' else (TARS.min + TARS.half)
             stride_pulse = int((max_stride_pulse - start_pulse) * stride_modifier + start_pulse)
 
             logger.info(f"S{step+1} | Dist: {distance_walked:.2f}cm | stride {stride_modifier:.2f} | output {output:.2f} | kp {pid.proportional:.2f} | ki {pid.integral:.2f} | kd {pid.derivative:.2f} | Time: {time.perf_counter()-start_time:.4f}sec")
@@ -312,17 +312,17 @@ def main():
                 step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, step_count, "fwd")
+            walk(TARS, step_count, "forward")
         elif choice == '2':
             try:
                 step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, step_count, "bkwd")
+            walk(TARS, step_count, "backward")
         elif choice == '3':
             try:
                 distance = float(input("Target distance (cm) > "))
-                direction = input("Direction (fwd/bkwd) > ").strip()
+                direction = input("Direction (forward/backward) > ").strip()
                 run(TARS, distance, direction)
             except ValueError:
                 print("Invalid input.")
