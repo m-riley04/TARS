@@ -32,8 +32,8 @@ def walk(TARS, steps:int, direction:str):
     try:
         # Predefine
         start_pulse = TARS.mid
-        down_left = 262 # 132~ deg
-        up_left = 600 # 0
+        down = 290 # 124~ deg
+        down = 600 # 0
         ts = 0.75 # Time asleep -- need to tune later to make faster
     
         # Set all servos to neutral position
@@ -47,9 +47,9 @@ def walk(TARS, steps:int, direction:str):
         rh = 3
 
         # Set Servos to Home
-        TARS.set_servo_pulse(lv, down_left)
+        TARS.set_servo_pulse(lv, down)
         TARS.set_servo_pulse(lh, start_pulse)
-        TARS.set_servo_pulse(rv, down_left)
+        TARS.set_servo_pulse(rv, down)
         TARS.set_servo_pulse(rh, start_pulse)
 
         time.sleep(ts)
@@ -85,33 +85,33 @@ def walk(TARS, steps:int, direction:str):
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(lv, up_left)
+                    TARS.set_servo_pulse(lv, down)
                     TARS.move_servo_gradually(lh, start_pulse, end_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(lv, down_left)
-                    TARS.set_servo_pulse(rv, up_left)
+                    TARS.set_servo_pulse(lv, down)
+                    TARS.set_servo_pulse(rv, down)
                     TARS.move_servo_gradually(rh, start_pulse, end_pulse)
                     TARS.move_servo_gradually(lh, end_pulse, start_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(rh, down_left)
+                    TARS.set_servo_pulse(rh, down)
                     TARS.move_servo_gradually(rh, end_pulse, start_pulse)
                     time.sleep(ts)
 
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(rv, up_left)
+                    TARS.set_servo_pulse(rv, down)
                     TARS.move_servo_gradually(rh, start_pulse, end_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(rv, down_left)
-                    TARS.set_servo_pulse(lv, up_left)
+                    TARS.set_servo_pulse(rv, down)
+                    TARS.set_servo_pulse(lv, down)
                     TARS.move_servo_gradually(lh, start_pulse, end_pulse)
                     TARS.move_servo_gradually(rh, end_pulse, start_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(lh, down_left)
+                    TARS.set_servo_pulse(lh, down)
                     TARS.move_servo_gradually(lh, end_pulse, start_pulse)
                     time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
@@ -121,33 +121,33 @@ def walk(TARS, steps:int, direction:str):
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(lv, up_left)
+                    TARS.set_servo_pulse(lv, down)
                     TARS.move_servo_gradually(lh, start_pulse, end_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(lv, down_left)
-                    TARS.set_servo_pulse(rv, up_left)
+                    TARS.set_servo_pulse(lv, down)
+                    TARS.set_servo_pulse(rv, down)
                     TARS.move_servo_gradually(rh, start_pulse, end_pulse)
                     TARS.move_servo_gradually(lh, end_pulse, start_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(rh, down_left)
+                    TARS.set_servo_pulse(rh, down)
                     TARS.move_servo_gradually(rh, end_pulse, start_pulse)
                     time.sleep(ts)
 
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(rv, up_left)
+                    TARS.set_servo_pulse(rv, down)
                     TARS.move_servo_gradually(rh, start_pulse, end_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(rv, down_left)
-                    TARS.set_servo_pulse(lv, up_left)
+                    TARS.set_servo_pulse(rv, down)
+                    TARS.set_servo_pulse(lv, down)
                     TARS.move_servo_gradually(lh, start_pulse, end_pulse)
                     TARS.move_servo_gradually(rh, end_pulse, start_pulse)
                     time.sleep(ts)
 
-                    TARS.set_servo_pulse(lh, down_left)
+                    TARS.set_servo_pulse(lh, down)
                     TARS.move_servo_gradually(lv, end_pulse, start_pulse)
                     time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
