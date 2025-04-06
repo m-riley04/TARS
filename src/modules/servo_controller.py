@@ -239,7 +239,7 @@ def run(TARS, distance:int, direction:str):
             max_stride_pulse = (TARS.max - TARS.half) if direction == 'fwd' else (TARS.min + TARS.half)
             stride_pulse = int((max_stride_pulse - start_pulse) * stride_modifier + start_pulse)
 
-            logger.info(f"S{step+1} | Dist: {distance_walked:.2f}cm | stride {stride_modifier:.2f} | output {output:.2f}| kp {pid.proportional:.2f} | ki {pid.integral:.2f} | kd {pid.derivative:.2f} | Time: {time.perf_counter()-start_time:.4f}sec")
+            logger.info(f"S{step+1} | Dist: {distance_walked:.2f}cm | stride {stride_modifier:.2f} | output {output:.2f} | kp {pid.proportional:.2f} | ki {pid.integral:.2f} | kd {pid.derivative:.2f} | Time: {time.perf_counter()-start_time:.4f}sec")
 
             # Alternate left/right
             if step % 2 == 0:
