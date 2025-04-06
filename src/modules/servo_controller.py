@@ -2,8 +2,8 @@ import time
 import sys
 import logging
 import math
-from helpers.servo_logic import ServoController
-from helpers.pid_logic import PID
+from modules.helpers.servo_logic import ServoController
+from modules.helpers.pid_logic import PID
 
 # Configure logging
 logging.basicConfig(
