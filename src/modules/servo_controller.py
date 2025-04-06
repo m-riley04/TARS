@@ -206,7 +206,7 @@ def run(TARS, distance:int, direction:str):
         
         """
         base_stride_cm = 4.5  # Your estimated distance per step
-        stride_adjustment_per_output = 0.1  # Scales how PID affects stride
+        stride_adjustment_per_output = 0.01  # Scales how PID affects stride
         time_step = 0.4
         start_time = time.perf_counter()
 
@@ -225,7 +225,7 @@ def run(TARS, distance:int, direction:str):
         time.sleep(time_step)
 
         # PID setup
-        pid = PID(kp=2.0, ki=0.5, kd=0.65)
+        pid = PID(kp=2.0, ki=0.5, kd=0.85)
         distance_walked = 0
         step = 0
 
