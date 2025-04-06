@@ -54,7 +54,7 @@ class ServoController:
         # Default pulse width range
         self.min_pulse = 140 # 86 full min
         self.max_pulse = 600 # 649 full max
-        self.half = 230/2 # 45 deg angle
+        self.half = 115 # 45 deg angle
         self.neutral_pulse = 370
         
         # Connect to the PCA9685
@@ -263,7 +263,39 @@ class ServoController:
                 logger.error("Invalid input. Please enter a number.")
         
         return True
-    
+
+    def move_servo_gradually(controller, channel, start_pulse, end_pulse, steps=10, delay=0.05):
+        """
+        Move a servo from one position to another gradually.
+        
+        Args:
+            controller: ServoController instance
+            channel: Servo channel number
+            start_pulse: Starting pulse width
+            end_pulse: Ending pulse width
+            steps: Number of steps to take
+            delay: Delay between steps in seconds
+        """
+        if not controller.connected:
+            logger.error("Not connected to PCA9685. Cannot move servo gradually.")
+            return
+        
+        logger.info(f"Moving servo {channel} gradually from {start_pulse} to {end_pulse}...")
+        
+        try:
+            step_size = (end_pulse - start_pulse) / steps
+            current_pulse = start_pulse
+            
+            for i in range(steps + 1):
+                pulse = int(start_pulse + i * step_size)
+                controller.set_servo_pulse(channel, pulse)
+                time.sleep(delay)
+            
+            logger.info(f"Gradual movement of servo {channel} completed")
+        
+        except Exception as e:
+            logger.error(f"Error during gradual servo movement: {e}")
+
     def servo_control_menu(self):
         """
         Display an interactive menu for controlling servos.

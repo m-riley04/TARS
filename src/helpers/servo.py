@@ -69,40 +69,33 @@ def walk(TARS, steps:int, direction:str):
 
         if direction == 'fwd':
             # Math to get left and right movements 
+            start_pulse = TARS.neutral_pulse
+            end_pulse = TARS.max_pulse - TARS.half
+            home = TARS.min_pulse + TARS.half - 10 # 154
+            target = 600 # 0
+
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
-                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
+                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
+                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
 
                 else:
                     # Right side operation
-                    TARS.set_servo_pulse(3, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(3, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.neutral_pulse)
-                    TARS.set_servo_pulse(1, TARS.max_pulse - TARS.half)
+                    TARS.move_servo_gradually(3, end_pulse, start_pulse)
+                    TARS.move_servo_gradually(1, start_pulse, end_pulse)
                     time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.neutral_pulse)
+                    TARS.move_servo_gradually(1, end_pulse, start_pulse)
 
             logger.info(f"Walked {steps} steps forward")
         elif direction == 'bkwd':
-            for i in range(steps):
-                if i % 2 != 0:
-                    # Left side operation
-                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                else:
-                    # Right side operation
-                    TARS.set_servo_pulse(3, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
-                    TARS.set_servo_pulse(1, TARS.min_pulse + TARS.half)
-                    time.sleep(ts)
+            logger.info("Not implemented yet...")
             logger.info(f"Walked {steps} steps forward")
         else:
             logger.info("Not a valid direction")
@@ -119,6 +112,7 @@ def walk(TARS, steps:int, direction:str):
 #########################################################################
 
 def main():
+    logger.info("\n")
     logger.info("Starting servo testing...")
 
     # Create a servo controller instance
@@ -130,7 +124,8 @@ def main():
     
     # Display menu?
     while True:
-        logger.info("\nSelect an option:")
+        logger.info("\n\n")
+        logger.info("Select an option:")
         logger.info("1. Walk forward")
         logger.info("2. Walk backward")
         logger.info("5. Exit")
@@ -139,18 +134,18 @@ def main():
 
         if choice == '1':
             try:
-                steps = int(input("How many steps? >"))
+                step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, steps, "fwd")
+            walk(TARS, step_count, "fwd")
         elif choice == '2':
             try:
-                steps = int(input("How many steps? >"))
+                step_count = int(input("How many steps? > "))
             except ValueError:
                 print("Not an integer value...")
-            walk(TARS, steps, "bkwd")
+            walk(TARS, step_count, "bkwd")
         elif choice == '5':
-            logger.info("Exiting sero.py script")
+            logger.info("Exiting servo.py script")
             break
         else:
             logger.warning("Invalid choice. Please try again.")
