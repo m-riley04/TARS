@@ -231,6 +231,22 @@ class TARS:
             
             return ret
         
+        if function_call.name == "walk": 
+            ret = self.action_walk()
+            
+            # Log
+            self.logger.info(f"Walking: {ret}")
+            
+            return ret
+        
+        if function_call.name == "run_dec": 
+            ret = self.action_run()
+            
+            # Log
+            self.logger.info(f"Running: {ret}")
+            
+            return ret
+        
         if function_call.name == "clear_conversation": 
             ret = self.action_clear_conversaion()
             
