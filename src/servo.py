@@ -71,6 +71,8 @@ def walk(TARS, steps:int, direction:str):
             # Math to get left and right movements 
             start_pulse = TARS.neutral_pulse
             end_pulse = TARS.max_pulse - TARS.half
+            home = TARS.min_pulse + TARS.half - 10 # 154
+            target = 600 # 0
 
             for i in range(steps):
                 if i % 2 != 0:
