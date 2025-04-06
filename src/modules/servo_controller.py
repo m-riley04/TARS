@@ -1,7 +1,9 @@
 import time
 import sys
 import logging
+import math
 from helpers.servo_logic import ServoController
+from helpers.pid_logic import PID
 
 # Configure logging
 logging.basicConfig(
@@ -19,6 +21,8 @@ def walk(TARS, steps:int, direction:str):
 
     Args:
         TARS: ServoController instance
+        steps: Step count -- Alternates left and right stride
+        direction: Forwards or Backwards
     """
     if not TARS.connected:
         logger.error("Not connected to PCA9685. Cannot perform walking sequence.")
@@ -28,7 +32,6 @@ def walk(TARS, steps:int, direction:str):
     try:
         # Predefine
         start_pulse = TARS.mid
-        end_pulse = TARS.max - TARS.half
         down = 206 # 154 deg
         up = 600 # 0
         ts = 0.75 # Time asleep -- need to tune later to make faster
@@ -78,6 +81,43 @@ def walk(TARS, steps:int, direction:str):
 
         if direction == 'fwd':
             # Math to get left and right movements 
+            end_pulse = TARS.max - TARS.half
+            for i in range(steps):
+                if i % 2 != 0:
+                    # Left side operation
+                    TARS.set_servo_pulse(lv, up)
+                    TARS.move_servo_gradually(lh, start_pulse, end_pulse)
+                    time.sleep(ts)
+
+                    TARS.set_servo_pulse(lv, down)
+                    TARS.set_servo_pulse(rv, up)
+                    TARS.move_servo_gradually(rh, start_pulse, end_pulse)
+                    TARS.move_servo_gradually(lh, end_pulse, start_pulse)
+                    time.sleep(ts)
+
+                    TARS.set_servo_pulse(rh, down)
+                    TARS.move_servo_gradually(rh, end_pulse, start_pulse)
+                    time.sleep(ts)
+
+                else:
+                    # Right side operation
+                    TARS.set_servo_pulse(rv, up)
+                    TARS.move_servo_gradually(rh, start_pulse, end_pulse)
+                    time.sleep(ts)
+
+                    TARS.set_servo_pulse(rv, down)
+                    TARS.set_servo_pulse(lv, up)
+                    TARS.move_servo_gradually(lh, start_pulse, end_pulse)
+                    TARS.move_servo_gradually(rh, end_pulse, start_pulse)
+                    time.sleep(ts)
+
+                    TARS.set_servo_pulse(lh, down)
+                    TARS.move_servo_gradually(lh, end_pulse, start_pulse)
+                    time.sleep(ts)
+            logger.info(f"Walked {steps} steps forward")
+        elif direction == 'bkwd':
+            # Math to get left and right movements 
+            end_pulse = TARS.min + TARS.half
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
@@ -111,20 +151,134 @@ def walk(TARS, steps:int, direction:str):
                     TARS.move_servo_gradually(lv, end_pulse, start_pulse)
                     time.sleep(ts)
             logger.info(f"Walked {steps} steps forward")
-        elif direction == 'bkwd':
-            end_pulse = TARS.min + TARS.half
-            logger.info("Not implemented yet...")
-            logger.info(f"Walked {steps} steps forward")
         else:
             logger.info("Not a valid direction")
         
     except Exception as e:
         logger.error(f"Error during walk sequence: {e}")
 
+def turn(TARS, angle:int, direction:str):
+    """
+    TARS turn function
+
+    Args:
+        TARS: ServoController instancwe
+        angle: Turn Angle
+        direction: Clockwise or Counterclockwise
+    """
+    if not TARS.connected:
+        logger.error("Not connected to PCA9685. Cannot perform turning sequence.")
+        return
+    
+    logger.info("Starting turn sequence...")
+
+    try:
+        """ Theory
+
+        cry
+        
+        """
 
 
+        cry = 'sadness'
 
+    except Exception as e:
+        logger.error(f"Error during turn sequence: {e}")
 
+def run(TARS, distance:int, direction:str):
+    """
+    TARS run function w/ PID
+
+    Args:
+        TARS: ServoController instancwe
+        distance: Distance
+    """
+    if not TARS.connected:
+        logger.error("Not connected to PCA9685. Cannot perform turning sequence.")
+        return
+    
+    logger.info("Starting run sequence...")
+
+    try:
+        """ Theory
+
+        cry
+        
+        """
+        base_stride_cm = 4.5  # Your estimated distance per step
+        stride_adjustment_per_output = 0.1  # Scales how PID affects stride
+        time_step = 0.75
+
+        # Pulse range reference
+        start_pulse = TARS.mid
+        down = 206
+        up = 600
+
+        lv, lh, rv, rh = 0, 1, 2, 3
+
+        # Set home
+        TARS.set_servo_pulse(lv, down)
+        TARS.set_servo_pulse(lh, start_pulse)
+        TARS.set_servo_pulse(rv, down)
+        TARS.set_servo_pulse(rh, start_pulse)
+        time.sleep(time_step)
+
+        # PID setup
+        pid = PID(kp=2.0, ki=0.1, kd=0.05)
+        distance_walked = 0
+        step = 0
+
+        while distance_walked < distance:
+            # Estimate current position
+            output = pid.compute(distance, distance_walked, time_step)
+            stride_modifier = 1 + (output * stride_adjustment_per_output)
+            stride_modifier = max(0.8, min(1.2, stride_modifier))  # clamp
+
+            # Convert to pulse movement
+            max_stride_pulse = (TARS.max - TARS.half) if direction == 'fwd' else (TARS.min + TARS.half)
+            stride_pulse = int((max_stride_pulse - start_pulse) * stride_modifier + start_pulse)
+
+            logger.info(f"Step {step+1} | Est. walked: {distance_walked:.2f}cm | Stride factor: {stride_modifier:.2f}")
+
+            # Alternate left/right
+            if step % 2 == 0:
+                # Left step
+                TARS.set_servo_pulse(lv, up)
+                TARS.move_servo_gradually(lh, start_pulse, stride_pulse)
+                time.sleep(time_step)
+
+                TARS.set_servo_pulse(lv, down)
+                TARS.set_servo_pulse(rv, up)
+                TARS.move_servo_gradually(rh, start_pulse, stride_pulse)
+                TARS.move_servo_gradually(lh, stride_pulse, start_pulse)
+                time.sleep(time_step)
+
+                TARS.set_servo_pulse(rh, down)
+                TARS.move_servo_gradually(rh, stride_pulse, start_pulse)
+                time.sleep(time_step)
+            else:
+                # Right step
+                TARS.set_servo_pulse(rv, up)
+                TARS.move_servo_gradually(rh, start_pulse, stride_pulse)
+                time.sleep(time_step)
+
+                TARS.set_servo_pulse(rv, down)
+                TARS.set_servo_pulse(lv, up)
+                TARS.move_servo_gradually(lh, start_pulse, stride_pulse)
+                TARS.move_servo_gradually(rh, stride_pulse, start_pulse)
+                time.sleep(time_step)
+
+                TARS.set_servo_pulse(lh, down)
+                TARS.move_servo_gradually(lh, stride_pulse, start_pulse)
+                time.sleep(time_step)
+
+            step += 1
+            distance_walked += base_stride_cm * stride_modifier
+
+        logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps.")
+
+    except Exception as e:
+        logger.error(f"Error during run sequence: {e}")
 
 
 #########################################################################
@@ -146,6 +300,7 @@ def main():
         logger.info("Select an option:")
         logger.info("1. Walk forward")
         logger.info("2. Walk backward")
+        logger.info("3. Run distance")
         logger.info("5. Exit")
 
         choice = input("> ")
@@ -162,6 +317,13 @@ def main():
             except ValueError:
                 print("Not an integer value...")
             walk(TARS, step_count, "bkwd")
+        elif choice == '3':
+            try:
+                distance = float(input("Target distance (cm) > "))
+                direction = input("Direction (fwd/bkwd) > ").strip()
+                run(TARS, distance, direction)
+            except ValueError:
+                print("Invalid input.")
         elif choice == '5':
             logger.info("Exiting servo.py script")
             break
