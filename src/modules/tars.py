@@ -58,7 +58,7 @@ walk_declaration = {
 }
 
 run_declaration = {
-    "name": "run",
+    "name": "run_declaration",
     "description": "Run a particular distance.",
     "parameters": {
         "type": "object",

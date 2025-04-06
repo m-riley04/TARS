@@ -185,7 +185,7 @@ def turn(TARS, angle:int, direction:str):
     except Exception as e:
         logger.error(f"Error during turn sequence: {e}")
 
-def run(TARS, distance:int, direction:str):
+def run_declaration(TARS, distance:int, direction:str):
     """
     TARS run function w/ PID
 
