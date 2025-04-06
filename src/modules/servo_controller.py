@@ -66,12 +66,13 @@ def walk(TARS, steps:int, direction:str):
             # Math to get left and right movements 
             start_pulse = TARS.neutral_pulse
             end_pulse = TARS.max_pulse - TARS.half
-            home = TARS.min_pulse + TARS.half - 10 # 154
+            home = 206 # 154 deg
             target = 600 # 0
 
             for i in range(steps):
                 if i % 2 != 0:
                     # Left side operation
+                    TARS.set_servo_angle(0, 154)
                     TARS.move_servo_gradually(1, start_pulse, end_pulse)
                     time.sleep(ts)
                     TARS.move_servo_gradually(1, end_pulse, start_pulse)
