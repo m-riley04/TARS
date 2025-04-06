@@ -1,4 +1,4 @@
-from tars import TARS
+from .modules.tars import TARS
 import asyncio, dotenv, logging
 
 async def main():

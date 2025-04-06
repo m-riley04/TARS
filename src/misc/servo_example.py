@@ -10,7 +10,7 @@ basic servo operations from the ServoController class.
 import time
 import sys
 import logging
-from modules.servo_controller import ServoController
+from ..modules.servo_controller import ServoController
 
 # Configure logging
 logger = logging.getLogger('servo_example')
