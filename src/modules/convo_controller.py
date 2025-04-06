@@ -2,6 +2,7 @@ from google import genai
 from google.genai import types
 from modules.models.personality_parameters import PersonalityParameters
 import dotenv, logging
+import sounddevice
 
 AUTO_FUNCTION_CALLING = False
 

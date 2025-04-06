@@ -1,4 +1,6 @@
+import sounddevice
 import dotenv, json, logging, numpy as np, openwakeword as oww, pyaudio, speech_recognition as sr, vosk
+
 
 class ListenController():
     """

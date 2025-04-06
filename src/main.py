@@ -1,4 +1,5 @@
 from modules.tars import TARS
+import sounddevice, os
 import asyncio, dotenv, logging
 
 async def main():
