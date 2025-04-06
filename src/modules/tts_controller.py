@@ -20,12 +20,12 @@ class TtsController():
         self.tts_engine = tts.init() # CONSIDER: Could conditionally init based on the offline flag
         
         # Set voice properties
-        self.tone = "Matter-of-fact, understated wit, professionally detached."
-        self.voice_affect = "Neutral, dry, calmly authoritative, slightly mechanical."
-        self.pacing = "Steady, deliberate, slightly faster than average human speech."
-        self.emotion = "Controlled neutrality with occasional subtle amusement."
-        self.pronunciation = "Crisp, articulate, mildly robotic with minimal variation."
-        self.pauses = "Brief pauses strategically placed after humorous or sarcastic remarks for deadpan comedic effect."
+        self.tone = "N/A"
+        self.voice_affect = "N/A"
+        self.pacing = "Slightly faster than average human speech."
+        self.emotion = "N/A"
+        self.pronunciation = "Articulate, minimal variation."
+        self.pauses = "VERY, VERY brief pauses strategically placed after humorous or sarcastic remarks for deadpan comedic effect."
         
         # Log
         self.logger.info("TTSController initialized successfully.")

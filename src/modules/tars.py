@@ -2,10 +2,12 @@ from modules.listen_controller import ListenController
 from modules.convo_controller import ConvoController
 from modules.tts_controller import TtsController
 from modules.models.personality_parameters import PersonalityParameters
-import logging
+import logging, threading, queue
 from google.genai import types
 from modules.tars_tools import TarsTools
 import sounddevice
+
+from modules.text_controller import run_gui
 
 
 update_personality_declaration = {
@@ -55,11 +57,22 @@ walk_declaration = {
     }
 }
 
+shutdown = {
+    "name": "shutdown",
+    "description": "Terminates the program.",
+    "parameters": {
+        "type": "object",
+    }
+}
+
 class TARS:
     def __init__(self, env_path: str = "../.env"):
         # Configure logging
         self.logger = logging.getLogger('tars')
         self.logger.info("Initializing TARS...")
+        
+        # Queueing and gui
+        self.gui_queue = queue.Queue()
         
         # Initialize personality
         self.personality_parameters = PersonalityParameters()
@@ -105,27 +118,38 @@ class TARS:
         """Runs the program"""
         self.logger.info("Beginning main runtime loop...")
         
+        gui_thread = threading.Thread(target=run_gui, args=(self.gui_queue,), daemon=True)
+        gui_thread.start()
+        
         await self.tts_controller.speak("I am now online.", self.personality_parameters)
         while True:
+            
             # Wait for the wake phrase
             detected = self.listen_controller.listen_for_wake_phrase()
             
             # Check if the transcript contains wake word(s)/phrase(s)
-            if detected:
-                self.logger.info("Wake phrase detected!")
-                
-                # TODO: Lean forward and listen for the command
-            else:
+            if not detected:
                 self.logger.warning("Wake phrase not detected. Please try again.")
                 continue
+            
+            self.logger.info("Wake phrase detected!")
+            print('\a')  # Beep sound
+                
+            # TODO: Lean forward and listen for the command
+            
+            # Before listening for the command, update the GUI to show the listening indicator.
+            self.gui_queue.put({"listening": True})
 
             # Listen for the command after the wake word has been detected
             user_command = self.listen_controller.listen_for_command()
             
+            # Send GUI update again
+            self.gui_queue.put({"listening": False})
+            # TODO: Lean backward and stop listening
+            
             # Check command validity
             if user_command is None:
                 self.logger.warning("No command detected. Please try again.")
-                # TODO: Lean backward and stop listening
                 continue
             
             # Generate a repsonse using Gemini
@@ -149,6 +173,9 @@ class TARS:
             self.logger.info("=== REPLY FROM TARS ===")
             self.logger.info(f'"{response_text}"')
             self.logger.info("=== END OF MESSAGE ===")
+            
+            # Send the response text to the GUI (thread-safe)
+            self.gui_queue.put(response_text)
             
             # Speak the response using TTS
             await self.tts_controller.speak(response_text, self.personality_parameters)
