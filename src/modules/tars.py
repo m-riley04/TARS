@@ -131,6 +131,7 @@ class TARS:
             diagnostics, 
             wave, 
             shutdown,
+            walk_declaration,
             run_dec,
             clear_conversation])
         self.tts_controller = TtsController(env_path=env_path)
