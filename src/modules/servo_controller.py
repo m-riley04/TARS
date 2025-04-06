@@ -32,7 +32,7 @@ def walk(TARS, steps:int, direction:str):
     try:
         # Predefine
         start_pulse = TARS.mid
-        down_left = 242 # 140 deg
+        down_left = 262 # 132~ deg
         up_left = 600 # 0
         ts = 0.75 # Time asleep -- need to tune later to make faster
     
