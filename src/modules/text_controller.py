@@ -40,8 +40,14 @@ class TypingEffectApp:
             while True:
                 new_message = self.text_queue.get_nowait()
                 # If the message indicates listening state, update the light.
-                if isinstance(new_message, dict) and "listening" in new_message:
-                    self.update_listening_light(new_message["listening"])
+                if isinstance(new_message, dict):
+                    if "clear" in new_message and new_message["clear"]:
+                        self.full_text = ""
+                        self.index = 0
+                        self.label.config(text=self.full_text)
+                    # Check for listening indicator.
+                    elif "listening" in new_message:
+                        self.update_listening_light(new_message["listening"])
                 # Otherwise, assume it's text to display.
                 elif isinstance(new_message, str):
                     self.full_text += new_message + "\n"

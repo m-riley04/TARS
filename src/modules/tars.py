@@ -101,6 +101,14 @@ wave = {
     }
 }
 
+clear_conversation = {
+    "name": "clear_conversaion",
+    "description": "Clears the conversation history.",
+    "parameters": {
+        "type": "object"
+    }
+}
+
 class TARS:
     def __init__(self, env_path: str = "../.env"):
         # Configure logging
@@ -147,6 +155,28 @@ class TARS:
         """Moves the arm to wave at the user"""
         # TODO: implement the wave action
         return "Waving at the user."
+    
+    def action_clear_conversaion(self):
+        """Clears the conversaion history"""
+        
+        self.convo_controller.reset_memory()
+        self.gui_queue.put({"clear": True})
+        
+        return "Conversation history cleared."
+    
+    def action_run(self):
+        """Runs the bot"""
+        
+        
+        
+        return "Running successful."
+    
+    def action_walk(self):
+        """Walks the bot"""
+        
+        
+        
+        return "Walking successful."
         
     def perform_function_call(self, function_call: types.FunctionCall):
         """Performs the function call using the TARS tools"""
@@ -188,6 +218,14 @@ class TARS:
             
             # Log
             self.logger.info(f"Waving: {ret}")
+            
+            return ret
+        
+        if function_call.name == "clear_conversation": 
+            ret = self.action_clear_conversaion()
+            
+            # Log
+            self.logger.info(f"Cleared conversation: {ret}")
             
             return ret
             
