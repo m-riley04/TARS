@@ -1,4 +1,4 @@
-import assemblyai as aai, dotenv, logging, numpy as np, openwakeword as oww, speech_recognition as sr
+import dotenv, json, logging, numpy as np, openwakeword as oww, pyaudio, speech_recognition as sr, vosk
 
 class ListenController():
     """
@@ -10,24 +10,25 @@ class ListenController():
         self.logger.info("Initializing ListenController...")
         
         # Initialize AssemblyAI API
-        aai.settings.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="ASSEMBLY_AI_API_KEY")
+        #aai.settings.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="ASSEMBLY_AI_API_KEY")
         
         # Init speech recognizer
         self.recognizer = sr.Recognizer()
         self.recognizer.dynamic_energy_threshold = False
-        self.recognizer.energy_threshold = 500
+        self.recognizer.energy_threshold = 400
 
         # Init microphone
-        self.microphone = sr.Microphone(sample_rate=16000, chunk_size=1280)
+        self.microphone = sr.Microphone(sample_rate=16_000, chunk_size=1280)
         
-        # Init transcriber (text to speech)
-        self.transcriber = aai.Transcriber()
+        # init offline speech recognition (vosk)
+        #self.vosk_model = vosk.Model("models/vosk-model-small-en-us-0.15")
+        #self.vosk_recognizer = vosk.KaldiRecognizer(self.vosk_model, 16_000)
         
         # Init wake word model
         oww.utils.download_models()
         self.wake_word_model = oww.Model(
-            wakeword_models=["models/hey_tars.onnx"],
-            custom_verifier_models={"hey_tars": f"models/training/riley_model.pkl"},
+            wakeword_models=["activation_model/hey_tars.onnx"],
+            custom_verifier_models={"hey_tars": f"activation_model/training/riley_model.pkl"},
             custom_verifier_threshold=0.3,
             inference_framework="onnx")
         
@@ -41,7 +42,7 @@ class ListenController():
         self.logger.info("Waiting for wake phrase ('Hey TARS')...")
         with self.microphone as source:
             # Listen for speaking
-            audio = self.recognizer.listen(source=source, phrase_time_limit=1.5)
+            audio = self.recognizer.listen(source=source, phrase_time_limit=2.0)
             
             # Log
             self.logger.info("Analyzing speech...")
@@ -57,38 +58,17 @@ class ListenController():
 
             return detected
 
-    def listen_for_command(self):
+    def listen_for_command(self, timeout=5):
         """Listens for the command after the wake word has been detected."""
         self.logger.info("Listening for command...")
         with self.microphone as source:
-            # Set the microphone to listen
-            audio = self.recognizer.listen(source)
+            # Listen for speaking
+            audio = self.recognizer.listen(source=source)
             
-            # Transcribe the audio using AssemblyAI
-            command = self.transcriber.transcribe_async(audio.get_wav_data()) #self.recognizer.recognize_assemblyai(audio.get_wav_data(), api_token=self.assembly_ai_api_key)
+            transcribed_text = json.loads(self.recognizer.recognize_vosk(audio_data=audio, language="en"))["text"]
             
-            # Log
-            self.logger.info("Transcribing command...")
-            
-            # Wait for transcription to complete
-            while command.running():
-                # Check if the transcription is complete
-                if command.done():
-                    break
-                
-            # Check for errors or cancellation
-            if command.exception():
-                self.logger.exception("Transcription error:", command.exception())
-                return
-            elif command.cancelled():
-                self.logger.warning("Transcription cancelled")
-                return
-            
-            _result = command.result()
-                
-            # Print the recognized command
-            self.logger.info(f"Transcribed command: {_result.text}\nConfidence: {_result.confidence}")
-            return _result.text
+        
+        return transcribed_text
         
         
 async def main():
@@ -100,7 +80,7 @@ async def main():
     listen_controller = ListenController(dotenv.find_dotenv())
     
     while True:
-        listen_controller.listen_for_wake_phrase()
+        print(listen_controller.listen_for_command())
    
 
 if __name__ == "__main__":

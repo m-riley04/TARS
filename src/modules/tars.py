@@ -90,7 +90,7 @@ class TARS:
             value = args.get("value")
             self.action_update_personality(parameter, value)
                 
-        if function_call.name == "get_weather":
+        if function_call.name == "get_weather": 
             weather_info = TarsTools.get_weather()
             
             # Log the weather information
