@@ -18,7 +18,7 @@ class ConvoController():
         
         # Initialize API 
         self.api_key = dotenv.get_key(dotenv_path=env_path, key_to_get="GEMINI_API_KEY")
-        self.model = "gemini-2.0-flash"
+        self.model = "gemini-2.0-flash-lite"
         self.function_declarations = function_declarations
         
         # Source: the TARS/Interstellar Fandom page (https://interstellarfilm.fandom.com/wiki/TARS)

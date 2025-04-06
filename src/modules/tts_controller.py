@@ -49,7 +49,7 @@ class TtsController():
             _instructions += f"\nPersonality Parameters:\n{personality_parameters}"
         
         async with self.client.audio.speech.with_streaming_response.create(
-            model="gpt-4o-mini-tts",
+            model="gpt-4o-mini-tts",#"tts-1",
             voice="onyx",
             input=text,
             instructions=_instructions,

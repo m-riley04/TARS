@@ -1,3 +1,4 @@
+from modules.helpers.servo_logic import ServoController
 from modules.listen_controller import ListenController
 from modules.convo_controller import ConvoController
 from modules.tts_controller import TtsController
@@ -130,9 +131,11 @@ class TARS:
             diagnostics, 
             wave, 
             shutdown,
+            walk_declaration,
             run_dec,
             clear_conversation])
         self.tts_controller = TtsController(env_path=env_path)
+        self.servo_controller = ServoController()
         
         # Log the initialization
         self.logger.info("TARS initialized successfully.")
@@ -175,14 +178,14 @@ class TARS:
     def action_run(self):
         """Runs the bot"""
         
-        run_declaration(self, 5, "forward")
+        run_declaration(self.servo_controller, 5, "forward")
         
         return "Running successful."
     
     def action_walk(self):
         """Walks the bot"""
         
-        walk(self, 5, "forward")
+        walk(self.servo_controller, 5, "forward")
         
         return "Walking successful."
         
@@ -226,6 +229,22 @@ class TARS:
             
             # Log
             self.logger.info(f"Waving: {ret}")
+            
+            return ret
+        
+        if function_call.name == "walk": 
+            ret = self.action_walk()
+            
+            # Log
+            self.logger.info(f"Walking: {ret}")
+            
+            return ret
+        
+        if function_call.name == "run_dec": 
+            ret = self.action_run()
+            
+            # Log
+            self.logger.info(f"Running: {ret}")
             
             return ret
         
