@@ -35,6 +35,11 @@ class TypingEffectApp:
         self.update_text()
 
     def update_text(self):
+        if self.index > 400:
+            self.index = 0
+            self.full_text = ""
+            self.label.config(text=self.full_text)
+        
         # Check if there's new text to display
         try:
             while True:
