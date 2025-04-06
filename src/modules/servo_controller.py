@@ -277,7 +277,7 @@ def run(TARS, distance:int, direction:str):
             distance_walked += base_stride_cm * stride_modifier
         
         time_elapsed = time.perf_counter() - start_time
-        logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps | Elapsed time: {time_elapsed:.4f} seconds")
+        logger.info(f"Finished walking ~{distance_walked:.2f}cm in {step} steps | Output: {output:.2f} | Elapsed time: {time_elapsed:.4f} seconds")
 
     except Exception as e:
         logger.error(f"Error during run sequence: {e}")
