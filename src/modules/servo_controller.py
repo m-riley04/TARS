@@ -323,7 +323,7 @@ def main():
             try:
                 distance = float(input("Target distance (cm) > "))
                 direction = input("Direction (forward/backward) > ").strip()
-                run(TARS, distance, direction)
+                run_declaration(TARS, distance, direction)
             except ValueError:
                 print("Invalid input.")
         elif choice == '5':
