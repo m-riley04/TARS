@@ -6,6 +6,7 @@ import logging, threading, queue
 from google.genai import types
 from modules.tars_tools import TarsTools
 import sounddevice
+from modules.servo_controller import walk, run_declaration 
 
 from modules.text_controller import run_gui
 
@@ -57,8 +58,8 @@ walk_declaration = {
     }
 }
 
-run_declaration = {
-    "name": "run_declaration",
+run_dec = {
+    "name": "run_dec",
     "description": "Run a particular distance.",
     "parameters": {
         "type": "object",
@@ -123,7 +124,14 @@ class TARS:
         
         # Initailize controllers
         self.listen_controller = ListenController(env_path=env_path)
-        self.convo_controller = ConvoController(env_path=env_path, function_declarations=[update_personality_declaration, get_weather_declaration, diagnostics, wave, shutdown])
+        self.convo_controller = ConvoController(env_path=env_path, function_declarations=[
+            update_personality_declaration, 
+            get_weather_declaration, 
+            diagnostics, 
+            wave, 
+            shutdown,
+            run_dec,
+            clear_conversation])
         self.tts_controller = TtsController(env_path=env_path)
         
         # Log the initialization
@@ -167,14 +175,14 @@ class TARS:
     def action_run(self):
         """Runs the bot"""
         
-        
+        run_declaration(self, 5, "forward")
         
         return "Running successful."
     
     def action_walk(self):
         """Walks the bot"""
         
-        
+        walk(self, 5, "forward")
         
         return "Walking successful."
         
