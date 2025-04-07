@@ -4,6 +4,13 @@ A real-life version of the robot TARS from the motion picture *Interstellar*; cr
 - [HackKU 2025 Devpost](https://hackku-2025.devpost.com/)
 - [HackKU Website](https://www.hackku.org)
 
+<span>
+<img width="250px" src="media/IMG_3959.jpg">
+<img width="250px" src="media/IMG_3958.jpg">
+<img width="250px" src="media/IMG_3930.jpg">
+</span>
+
+
 # Table of Contents
 - Credits
 - Dependencies
