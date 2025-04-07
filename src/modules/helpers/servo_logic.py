@@ -318,7 +318,7 @@ class ServoController:
             logger.info("2. Manually set servo 0 pulse width")
             logger.info("3. Manually set servo 1 pulse width")
             logger.info("4. Manually set servo 2 pulse width")
-            logger.info("5. Manually set servo 15 pulse width")
+            logger.info("5. Manually set servo 3 pulse width")
             logger.info("6. Auto-calibrate servo -- should be pin 15")
             logger.info("7. Exit")
             
@@ -333,7 +333,7 @@ class ServoController:
             elif choice == '4':
                 self.set_single_servo(2)
             elif choice == '5':
-                self.set_single_servo(15)
+                self.set_single_servo(3)
             elif choice == '6':
                 channel = int(input("Enter channel number (0-15): "))
                 is_center = input("Is this a center servo? (y/n): ").lower() == 'y'
