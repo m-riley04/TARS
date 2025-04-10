@@ -24,7 +24,7 @@ pip install -r REQUIREMENTS.txt
 ```
 
 # Credits
-- 3D Model (***BASE***): [TARS-AI](https://docs-tars-ai.vercel.app/build/3d_print)
+- 3D Model (***BASE***): [TARS-AI](https://docs-tars-ai.vercel.app/build/3d_print) OG Model credits go to Charlie Diaz
 - i2samp.py: [Adafruit](https://github.com/adafruit/Raspberry-Pi-Installer-Scripts/raw/main/i2samp.py)
 - TARS "backstory" system prompt segment: [TARS Fandom page](https://interstellarfilm.fandom.com/wiki/TARS)
 
@@ -67,21 +67,20 @@ We also utilized the `pyttsx3` package for the off-chance that we are unable to 
 # Hardware Components
 The major components of TARS' hardware can be found below.
 ## Microcomputer
-<!-- Add stuff here -->
+Raspberry pi 5 8gb
 ## Servos
-<!-- Add stuff here -->
+diymore Servo MG996R 
 ## Screen
-<!-- Add stuff here -->
+OSOYOO 3.5inch Touch Screen
 ## Battery
-<!-- Add stuff here -->
+Zeee 3S Lipo Battery 2200mAh 11.1V
 ## Speaker and Amplifier
-<!-- Add stuff here -->
 - Speaker: MakerHawk
 - Amplifier: [WWZMDiB MAX98357 I2S Amplifier Module](https://www.amazon.com/WWZMDiB-MAX98357-Amplifier-Unfiltered-Raspberry/dp/B0BTBS5NW2)
 ## Microphone
-<!-- Add stuff here -->
+DEWIN Mini USB Microphone
 ## 3D Prints
-<!-- Add stuff here -->
+Printed on a Bambu A1 using SUNLU Petg black filament
 
 # Base Info
 - Python 3.10.11
